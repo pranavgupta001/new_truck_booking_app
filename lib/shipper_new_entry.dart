@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'cardGenerator.dart';
-import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 String productType;
 String loadingPoint;
@@ -214,17 +213,17 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                         return;
                       }
                       try {
-                        Provider.of<TasksData>(context, listen: false).addTasks(
-                            productType,
-                            loadingPoint,
-                            unloadingPoint,
-                            truckPreference,
-                            noOfTrucks,
-                            weight,
-                            isPending,
-                            comments,
-                            isCommentsEmpty);
-                        print(TasksData().cards.length);
+                        // Provider.of<TasksData>(context, listen: false).addTasks(
+                        //     productType,
+                        //     loadingPoint,
+                        //     unloadingPoint,
+                        //     truckPreference,
+                        //     noOfTrucks,
+                        //     weight,
+                        //     isPending,
+                        //     comments,
+                        //     isCommentsEmpty);
+                        print(http.post('http://localhost:58464/load'));
                         Navigator.pushNamed(context, '/cards');
                       } catch (e) {
                         print(e);

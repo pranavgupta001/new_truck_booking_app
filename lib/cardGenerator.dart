@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:truck_booking_app/backend_connection.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'cardProperties.dart';
 
 class CardTile {
   String productType;
@@ -23,144 +26,107 @@ class CardTile {
       this.comments,
       this.isCommentsEmpty});
 }
+//
+// Future<List<CardsModal>> getCardsData() async {
+//   var Url = 'http://localhost:58464/load';
+//   var response = await http.post(Url);
+//   String responseString = response.body;
+//   var jsonData = json.decode(responseString);
+//   List<CardsModal> card = [];
+//   for (var json in jsonData) {
+//     print(json);
+//     CardsModal cardsModal = new CardsModal();
+//     cardsModal.loadingPoint = json["loadingPoint"];
+//     cardsModal.unloadingPoint = json["unloadingPoint"];
+//     cardsModal.productType = json["productType"];
+//     cardsModal.truckType = json["truckType"];
+//     cardsModal.noOfTrucks = json["noOfTrucks"];
+//     cardsModal.weight = json["weight"];
+//     cardsModal.comment = json["comment"];
+//     cardsModal.status = json["status"];
+//     card.add(cardsModal);
+//   }
+//   return card;
+// }
+//
 
-class DetailCard extends StatelessWidget {
-  String productType;
-  String loadingPoint;
-  String unloadingPoint;
-  String truckPreference;
-  String noOfTrucks;
-  String weight;
-  bool isPending;
-  String comments;
-  bool isCommentsEmpty;
 
-  DetailCard(
-      {this.loadingPoint,
-      this.unloadingPoint,
-      this.productType,
-      this.truckPreference,
-      this.noOfTrucks,
-      this.weight,
-      this.isPending,
-      this.comments,
-      this.isCommentsEmpty});
-
+class CardScreen extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 5),
-      color: Colors.lightGreenAccent,
-      padding: EdgeInsets.only(left: 15, top: 5, bottom: 5, right: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'From $loadingPoint To $unloadingPoint',
-                style: TextStyle(
-                  fontSize: 18,
-                ),
-              ),
-              Text(
-                'Product Type: $productType Truck Preference: $truckPreference',
-                style: TextStyle(
-                  fontSize: 18,
-                ),
-              ),
-              Text(
-                'Trucks Required: $noOfTrucks        Weight : $weight ',
-                style: TextStyle(
-                  fontSize: 18,
-                ),
-              ),
-              isCommentsEmpty
-                  ? Container()
-                  : Text(
-                      'Comments : $comments ',
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-            ],
-          ),
-          Container(
-              color: isPending ? Colors.red : Colors.green,
-              padding: EdgeInsets.all(3),
-              child: Text(
-                isPending ? 'Pending' : 'Approved',
-                style: TextStyle(fontSize: 18, color: Colors.white),
-                textAlign: TextAlign.right,
-              )),
-        ],
-      ),
-    );
-  }
+  _CardScreenState createState() => _CardScreenState();
 }
 
-class TasksData extends ChangeNotifier {
-  List<CardTile> cards = [];
+class _CardScreenState extends State<CardScreen> {
+  var jsonData;
 
-  void addTasks(
-    String productType,
-    String loadingPoint,
-    String unloadingPoint,
-    String truckPreference,
-    String noOfTrucks,
-    String weight,
-    bool isPending,
-    String comments,
-    bool isCommentsEmpty,
-  ) {
-    cards.add(CardTile(
-        loadingPoint: loadingPoint,
-        unloadingPoint: unloadingPoint,
-        productType: productType,
-        truckPreference: truckPreference,
-        noOfTrucks: noOfTrucks,
-        weight: weight,
-        isPending: isPending,
-        comments: comments,
-        isCommentsEmpty: isCommentsEmpty));
-    notifyListeners();
+  Future<List<CardsModal>> getCardsData() async {
+    print('adjmb');
+
+    http.Response response = await http.get('http://localhost:58464/load');
+    print(response.statusCode);
+    print(response);
+    jsonData = await jsonDecode(response.body);
+
+    print('jsonData');
+    print(jsonData);
+
+    List<CardsModal> card = [];
+    for (var json in jsonData) {
+      print('json');
+      print(json);
+      CardsModal cardsModal = new CardsModal();
+      cardsModal.loadingPoint = json["loadingPoint"];
+      cardsModal.unloadingPoint = json["unloadingPoint"];
+      cardsModal.productType = json["productType"];
+      cardsModal.truckType = json["truckType"];
+      cardsModal.noOfTrucks = json["noOfTrucks"];
+      cardsModal.weight = json["weight"];
+      cardsModal.comment = json["comment"];
+      cardsModal.status = json["status"];
+      card.add(cardsModal);
+    }
+    return card;
   }
-}
-
-class CardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Center(child: Text('Available Requests')),
+          title: Center(
+            child: Text('Available Requests'),
+          ),
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(15),
-                child: Consumer<TasksData>(
-                  builder: (context, tasksData, child) => ListView.builder(
-                    itemCount: tasksData.cards.length,
-                    itemBuilder: (context, index) => DetailCard(
-                      loadingPoint: tasksData.cards[index].loadingPoint,
-                      unloadingPoint: tasksData.cards[index].unloadingPoint,
-                      productType: tasksData.cards[index].productType,
-                      truckPreference: tasksData.cards[index].truckPreference,
-                      noOfTrucks: tasksData.cards[index].noOfTrucks,
-                      weight: tasksData.cards[index].weight,
-                      isPending: tasksData.cards[index].isPending,
-                      comments: tasksData.cards[index].comments,
-                      isCommentsEmpty: tasksData.cards[index].isCommentsEmpty,
-                    ),
-                  ),
-                ),
-              ),
+              child: FutureBuilder(
+                  future: getCardsData(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.data == null) {
+                      return Container(
+                        child: Center(
+                          child: Icon(Icons.error),
+                        ),
+                      );
+                    }
+                    return ListView.builder(
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (context, index) => DetailCard(
+                        loadingPoint: snapshot.data[index].loadingPoint,
+                        unloadingPoint: snapshot.data[index].unloadingPoint,
+                        productType: snapshot.data[index].productType,
+                        truckPreference: snapshot.data[index].truckType,
+                        noOfTrucks: snapshot.data[index].noOfTrucks,
+                        weight: snapshot.data[index].weight,
+                        isPending: snapshot.data[index].status == 'pending' ? true : false,
+                        comments: snapshot.data[index].comment,
+                        isCommentsEmpty:
+                            snapshot.data[index].comment == '' ? true : false,
+                      ),
+                    );
+                  }),
             ),
             Container(
               padding: EdgeInsets.only(
