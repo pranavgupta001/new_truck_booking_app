@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:truck_booking_app/backend_connection.dart';
+import 'dart:convert';
 
 String productType;
 String loadingPoint;
@@ -219,36 +220,6 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                         return;
                       }
                       try {
-                        // Provider.of<TasksData>(context, listen: false).addTasks(
-                        //     print(productType);
-                        //     print(loadingPoint);
-                        //     print(unloadingPoint);
-                        //     print(truckPreference);
-                        //     print(noOfTrucks);
-                        //     print(weight);
-                        //     print(isPending);
-                        //     print(comments);
-                        //     print(isCommentsEmpty);
-                        // print(http.post('http://10.0.2.2:58464/load', body: {
-                        //   "loadingPoint": loadingPoint,
-                        //   "unloadingPoint": unloadingPoint,
-                        //   "productType": productType,
-                        //   "truckType": truckPreference,
-                        //   "noOfTrucks": noOfTrucks,
-                        //   "weight": weight,
-                        //   "comment": isCommentsEmpty ? '' : comments,
-                        // }));
-                        // var abcd = cardsModalToJson(CardsModal(
-                        //     loadingPoint: loadingPoint,
-                        //     unloadingPoint: unloadingPoint,
-                        //   productType: productType,
-                        //   truckType: truckPreference,
-                        //   weight: weight,
-                        //   noOfTrucks: noOfTrucks,
-                        //   status: 'pending',
-                        //     comment: isCommentsEmpty ? '' : comments
-                        // ),);
-                        // print(abcd);
                         final createdCard = await createCardOnApi();
                         print(createdCard);
                         Navigator.pushNamed(context, '/cards');
@@ -275,18 +246,30 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
 }
 
 Future<CardsModal> createCardOnApi() async {
-  final String apiUrl = "http://10.0.2.2:58464/load";
-  final response = await http.post(apiUrl, body: {
+  Map data = {
     "loadingPoint": loadingPoint,
     "unloadingPoint": unloadingPoint,
     "productType": productType,
     "truckType": truckPreference,
     "noOfTrucks": noOfTrucks,
     "weight": weight,
-    "comment": isCommentsEmpty ? '' : comments,
-  });
+    "comment": isCommentsEmpty ? '' : comments
+  };
+  String body = json.encode(data);
+  final String apiUrl = "http://10.0.2.2:50738/load";
+  final response = await http.post(apiUrl,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: body);
+  print(loadingPoint);
+  print(unloadingPoint);
+  print(productType);
+  print(truckPreference);
+  print(noOfTrucks);
+  print(weight);
   print(response.statusCode);
-  print(response);
+  print(response.body);
 
   if (response.statusCode == 201) {
     final String responseString = response.body;
@@ -347,8 +330,16 @@ class _DropDownGeneratorState extends State<DropDownGenerator> {
         }
         if (value != widget.notAllowedValue) {
           return null;
-        } else
-          return 'Loading Point is Required';
+        } else {
+          if (widget.dropDownNumber == 'one') {
+            return 'Product Type is Required';
+          } else if (widget.dropDownNumber == 'two') {
+            return 'Truck Preference is Required';
+          } else if (widget.dropDownNumber == 'four') {
+            return 'weight is Required';
+          }
+          return null;
+        }
       },
     );
   }
