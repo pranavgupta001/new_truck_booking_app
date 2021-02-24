@@ -50,7 +50,6 @@ class CardTile {
 // }
 //
 
-
 class CardScreen extends StatefulWidget {
   @override
   _CardScreenState createState() => _CardScreenState();
@@ -60,20 +59,10 @@ class _CardScreenState extends State<CardScreen> {
   var jsonData;
 
   Future<List<CardsModal>> getCardsData() async {
-    print('adjmb');
-
-    http.Response response = await http.get('http://localhost:58464/load');
-    print(response.statusCode);
-    print(response);
+    http.Response response = await http.get('http://10.0.2.2:58464/load');
     jsonData = await jsonDecode(response.body);
-
-    print('jsonData');
-    print(jsonData);
-
     List<CardsModal> card = [];
     for (var json in jsonData) {
-      print('json');
-      print(json);
       CardsModal cardsModal = new CardsModal();
       cardsModal.loadingPoint = json["loadingPoint"];
       cardsModal.unloadingPoint = json["unloadingPoint"];
@@ -87,6 +76,7 @@ class _CardScreenState extends State<CardScreen> {
     }
     return card;
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -120,7 +110,9 @@ class _CardScreenState extends State<CardScreen> {
                         truckPreference: snapshot.data[index].truckType,
                         noOfTrucks: snapshot.data[index].noOfTrucks,
                         weight: snapshot.data[index].weight,
-                        isPending: snapshot.data[index].status == 'pending' ? true : false,
+                        isPending: snapshot.data[index].status == 'pending'
+                            ? true
+                            : false,
                         comments: snapshot.data[index].comment,
                         isCommentsEmpty:
                             snapshot.data[index].comment == '' ? true : false,

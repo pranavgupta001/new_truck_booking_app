@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:truck_booking_app/backend_connection.dart';
 
 String productType;
 String loadingPoint;
@@ -14,6 +15,7 @@ bool isCommentsEmpty = true;
 var controller1 = TextEditingController();
 var controller2 = TextEditingController();
 var controller3 = TextEditingController();
+
 class ShipperNewEntryScreen extends StatefulWidget {
   @override
   _ShipperNewEntryScreenState createState() => _ShipperNewEntryScreenState();
@@ -27,10 +29,14 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
     controller2.clear();
     controller3.clear();
   }
+
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    controller1.clear();
+    controller2.clear();
+    controller3.clear();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -67,8 +73,8 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                               },
                               decoration: InputDecoration(
                                 labelText: 'Loading Point',
-                                labelStyle: TextStyle(
-                                    fontSize: 20, color: Colors.grey),
+                                labelStyle:
+                                    TextStyle(fontSize: 20, color: Colors.grey),
                               ),
                               validator: (String value) {
                                 if (value.isEmpty) {
@@ -76,8 +82,8 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                                 } else
                                   return null;
                               },
-                              style: TextStyle(
-                                  fontSize: 20, color: Colors.black),
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.black),
                             ),
                           ),
                           Expanded(
@@ -89,8 +95,8 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                               },
                               decoration: InputDecoration(
                                 labelText: 'Unloading Point',
-                                labelStyle: TextStyle(
-                                    fontSize: 20, color: Colors.grey),
+                                labelStyle:
+                                    TextStyle(fontSize: 20, color: Colors.grey),
                               ),
                               validator: (String value) {
                                 if (value.isEmpty) {
@@ -98,8 +104,8 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                                 } else
                                   return null;
                               },
-                              style: TextStyle(
-                                  fontSize: 20, color: Colors.black),
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.black),
                             ),
                           ),
                           Expanded(
@@ -177,11 +183,11 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                               },
                               decoration: InputDecoration(
                                 hintText: 'Comments',
-                                hintStyle: TextStyle(
-                                    fontSize: 20, color: Colors.grey),
+                                hintStyle:
+                                    TextStyle(fontSize: 20, color: Colors.grey),
                               ),
-                              style: TextStyle(
-                                  fontSize: 20, color: Colors.black),
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.black),
                             ),
                           ),
                         ],
@@ -192,7 +198,7 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                 Container(
                   height: 70,
                   child: FlatButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (!formKey.currentState.validate()) {
                         return;
                       }
@@ -214,16 +220,37 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                       }
                       try {
                         // Provider.of<TasksData>(context, listen: false).addTasks(
-                        //     productType,
-                        //     loadingPoint,
-                        //     unloadingPoint,
-                        //     truckPreference,
-                        //     noOfTrucks,
-                        //     weight,
-                        //     isPending,
-                        //     comments,
-                        //     isCommentsEmpty);
-                        print(http.post('http://localhost:58464/load'));
+                        //     print(productType);
+                        //     print(loadingPoint);
+                        //     print(unloadingPoint);
+                        //     print(truckPreference);
+                        //     print(noOfTrucks);
+                        //     print(weight);
+                        //     print(isPending);
+                        //     print(comments);
+                        //     print(isCommentsEmpty);
+                        // print(http.post('http://10.0.2.2:58464/load', body: {
+                        //   "loadingPoint": loadingPoint,
+                        //   "unloadingPoint": unloadingPoint,
+                        //   "productType": productType,
+                        //   "truckType": truckPreference,
+                        //   "noOfTrucks": noOfTrucks,
+                        //   "weight": weight,
+                        //   "comment": isCommentsEmpty ? '' : comments,
+                        // }));
+                        // var abcd = cardsModalToJson(CardsModal(
+                        //     loadingPoint: loadingPoint,
+                        //     unloadingPoint: unloadingPoint,
+                        //   productType: productType,
+                        //   truckType: truckPreference,
+                        //   weight: weight,
+                        //   noOfTrucks: noOfTrucks,
+                        //   status: 'pending',
+                        //     comment: isCommentsEmpty ? '' : comments
+                        // ),);
+                        // print(abcd);
+                        final createdCard = await createCardOnApi();
+                        print(createdCard);
                         Navigator.pushNamed(context, '/cards');
                       } catch (e) {
                         print(e);
@@ -244,6 +271,29 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
         ),
       ),
     );
+  }
+}
+
+Future<CardsModal> createCardOnApi() async {
+  final String apiUrl = "http://10.0.2.2:58464/load";
+  final response = await http.post(apiUrl, body: {
+    "loadingPoint": loadingPoint,
+    "unloadingPoint": unloadingPoint,
+    "productType": productType,
+    "truckType": truckPreference,
+    "noOfTrucks": noOfTrucks,
+    "weight": weight,
+    "comment": isCommentsEmpty ? '' : comments,
+  });
+  print(response.statusCode);
+  print(response);
+
+  if (response.statusCode == 201) {
+    final String responseString = response.body;
+
+    return cardsModalFromJson(responseString);
+  } else {
+    return null;
   }
 }
 

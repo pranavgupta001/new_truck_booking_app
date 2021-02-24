@@ -1,11 +1,28 @@
+// To parse this JSON data, do
+
+//     final cardsModal = cardsModalFromJson(jsonString);
 import 'dart:convert';
 
+CardsModal cardsModalFromJson(String str) => CardsModal.fromJson(json.decode(str));
 
-CardsModal cardsModalJson(String values) => CardsModal.fromJson(json.decode(values));
 String cardsModalToJson(CardsModal data) => json.encode(data.toJson());
 
-
 class CardsModal {
+  CardsModal({
+    this.id,
+    this.ownerId,
+    this.loadingPoint,
+    this.unloadingPoint,
+    this.productType,
+    this.truckType,
+    this.noOfTrucks,
+    this.weight,
+    this.comment,
+    this.status,
+  });
+
+  String id;
+  dynamic ownerId;
   String loadingPoint;
   String unloadingPoint;
   String productType;
@@ -15,46 +32,98 @@ class CardsModal {
   String comment;
   String status;
 
-  CardsModal(
-      {this.loadingPoint,
-      this.unloadingPoint,
-      this.productType,
-      this.truckType,
-      this.noOfTrucks,
-      this.weight,
-      this.comment,
-      this.status});
-
   factory CardsModal.fromJson(Map<String, dynamic> json) => CardsModal(
-        loadingPoint: json["loadingPoint"],
-        unloadingPoint: json["unloadingPoint"],
-        productType: json["productType"],
-        truckType: json["truckType"],
-        noOfTrucks: json["noOfTrucks"],
-        weight: json["weight"],
-        comment: json["comment"],
-        status: json["status"],
-      );
+    id: json["id"],
+    ownerId: json["ownerId"],
+    loadingPoint: json["loadingPoint"],
+    unloadingPoint: json["unloadingPoint"],
+    productType: json["productType"],
+    truckType: json["truckType"],
+    noOfTrucks: json["noOfTrucks"],
+    weight: json["weight"],
+    comment: json["comment"],
+    status: json["status"],
+  );
 
   Map<String, dynamic> toJson() => {
-        "loadingPoint": loadingPoint,
-        "unloadingPoint": unloadingPoint,
-        "productType": productType,
-        "truckType": truckType,
-        "noOfTrucks": noOfTrucks,
-        "weight": weight,
-        "comment": comment,
-        "status": status,
-      };
-  String get loadingpoint => loadingPoint;
-  String get unloadingpoint => unloadingPoint;
-  String get producttype => productType;
-  String get trucktype => truckType;
-  String get nooftrucks => noOfTrucks;
-  String get weights => weight;
-  String get comments => comment;
-  String get statuss => status;
+    "id": id,
+    "ownerId": ownerId,
+    "loadingPoint": loadingPoint,
+    "unloadingPoint": unloadingPoint,
+    "productType": productType,
+    "truckType": truckType,
+    "noOfTrucks": noOfTrucks,
+    "weight": weight,
+    "comment": comment,
+    "status": status,
+  };
 }
+
+// import 'dart:convert';
+//
+// CardsModal cardsModalJson(String values) =>
+//     CardsModal.fromJson(json.decode(values));
+//
+// String cardsModalToJson(CardsModal data) => json.encode(data.toJson());
+//
+// class CardsModal {
+//   String loadingPoint;
+//   String unloadingPoint;
+//   String productType;
+//   String truckType;
+//   String noOfTrucks;
+//   String weight;
+//   String comment;
+//   String status;
+//
+//   CardsModal(
+//       {this.loadingPoint,
+//       this.unloadingPoint,
+//       this.productType,
+//       this.truckType,
+//       this.noOfTrucks,
+//       this.weight,
+//       this.comment,
+//       this.status});
+//
+//   factory CardsModal.fromJson(Map<String, dynamic> json) => CardsModal(
+//         loadingPoint: json["loadingPoint"],
+//         unloadingPoint: json["unloadingPoint"],
+//         productType: json["productType"],
+//         truckType: json["truckType"],
+//         noOfTrucks: json["noOfTrucks"],
+//         weight: json["weight"],
+//         comment: json["comment"],
+//         status: json["status"],
+//       );
+//
+//   Map<String, dynamic> toJson() => {
+//         "loadingPoint": loadingPoint,
+//         "unloadingPoint": unloadingPoint,
+//         "productType": productType,
+//         "truckType": truckType,
+//         "noOfTrucks": noOfTrucks,
+//         "weight": weight,
+//         "comment": comment,
+//         "status": status,
+//       };
+//
+//   String get loadingpoint => loadingPoint;
+//
+//   String get unloadingpoint => unloadingPoint;
+//
+//   String get producttype => productType;
+//
+//   String get trucktype => truckType;
+//
+//   String get nooftrucks => noOfTrucks;
+//
+//   String get weights => weight;
+//
+//   String get comments => comment;
+//
+//   String get statuss => status;
+// }
 
 //
 //
