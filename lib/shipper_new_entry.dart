@@ -1,9 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:truck_booking_app/backend_connection.dart';
 import 'dart:convert';
-
+String mapKey = "AIzaSyCTVVijIWofDrI6LpSzhUqJIF90X-iyZmE";
 String productType;
 String loadingPoint;
 String unloadingPoint;
@@ -18,12 +19,23 @@ var controller2 = TextEditingController();
 var controller3 = TextEditingController();
 
 class ShipperNewEntryScreen extends StatefulWidget {
+  User user;
+  ShipperNewEntryScreen({this.user});
   @override
   _ShipperNewEntryScreenState createState() => _ShipperNewEntryScreenState();
 }
 
 class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
   @override
+  void fillCityName(String cityName) async{
+    if (cityName.length > 1) {
+      String autoCompleteUrl = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$cityName&key=$mapKey&sessiontoken=1234567890';
+      var res = await http.get(autoCompleteUrl);
+      var jsonData = await jsonDecode(res.body);
+      print(res.statusCode);
+      print(jsonData);
+    }
+  }
   void initState() {
     super.initState();
     controller1.clear();
@@ -47,8 +59,8 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
         backgroundColor: Colors.white,
         body: SafeArea(
           child: Form(
-            autovalidate: true,
             key: formKey,
+            autovalidateMode: AutovalidateMode.always,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -66,15 +78,15 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Expanded(
-                            flex: 4,
                             child: TextFormField(
                               controller: controller1,
                               onChanged: (newValue) {
                                 loadingPoint = newValue;
+                                fillCityName(newValue);
                               },
                               decoration: InputDecoration(
-                                labelText: 'Loading Point',
-                                labelStyle:
+                                hintText: 'Loading Point',
+                                hintStyle:
                                     TextStyle(fontSize: 20, color: Colors.grey),
                               ),
                               validator: (String value) {
@@ -88,15 +100,14 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                             ),
                           ),
                           Expanded(
-                            flex: 4,
                             child: TextFormField(
                               controller: controller2,
                               onChanged: (newValue) {
                                 unloadingPoint = newValue;
                               },
                               decoration: InputDecoration(
-                                labelText: 'Unloading Point',
-                                labelStyle:
+                                hintText: 'Unloading Point',
+                                hintStyle:
                                     TextStyle(fontSize: 20, color: Colors.grey),
                               ),
                               validator: (String value) {
@@ -110,7 +121,6 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                             ),
                           ),
                           Expanded(
-                            flex: 4,
                             child: DropDownGenerator(
                               dropdownValue: 'Product Type',
                               dropdownValues: [
@@ -124,7 +134,6 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                             ),
                           ),
                           Expanded(
-                            flex: 4,
                             child: DropDownGenerator(
                               dropdownValue: 'Truck Preference',
                               dropdownValues: [
@@ -137,7 +146,6 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                             ),
                           ),
                           Expanded(
-                            flex: 4,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -163,7 +171,6 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                             ),
                           ),
                           Expanded(
-                            flex: 4,
                             child: DropDownGenerator(
                               dropdownValue: 'Weight (In Tons)',
                               dropdownValues: [
@@ -176,7 +183,6 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                             ),
                           ),
                           Expanded(
-                            flex: 4,
                             child: TextField(
                               controller: controller3,
                               onChanged: (newValue) {
@@ -216,9 +222,6 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                       } else {
                         isCommentsEmpty = true;
                       }
-                      if (productType == 'Product Type') {
-                        return;
-                      }
                       try {
                         final createdCard = await createCardOnApi();
                         print(createdCard);
@@ -256,7 +259,7 @@ Future<CardsModal> createCardOnApi() async {
     "comment": isCommentsEmpty ? '' : comments
   };
   String body = json.encode(data);
-  final String apiUrl = "http://10.0.2.2:50738/load";
+  final String apiUrl = "http://10.0.2.2:63444/load";
   final response = await http.post(apiUrl,
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -343,4 +346,5 @@ class _DropDownGeneratorState extends State<DropDownGenerator> {
       },
     );
   }
+
 }

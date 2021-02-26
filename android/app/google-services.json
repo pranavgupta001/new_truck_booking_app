@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "233088552779",
+    "project_id": "truckbookingapp-32826",
+    "storage_bucket": "truckbookingapp-32826.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:233088552779:android:4f9c78e31cc9198ae5e2ce",
+        "android_client_info": {
+          "package_name": "com.chirag4601.new_truck_booking_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "233088552779-nq0bu0cc6prv4hqiqt51uutj5upf0cud.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCI8bvNwE05B7Cp03Rvc-QsMX9QjY-EsS4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "233088552779-nq0bu0cc6prv4hqiqt51uutj5upf0cud.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:233088552779:android:398549be3fe4d2fee5e2ce",
+        "android_client_info": {
+          "package_name": "com.chirag4601.truck_booking_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "233088552779-nq0bu0cc6prv4hqiqt51uutj5upf0cud.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCI8bvNwE05B7Cp03Rvc-QsMX9QjY-EsS4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "233088552779-nq0bu0cc6prv4hqiqt51uutj5upf0cud.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

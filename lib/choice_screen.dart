@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 class ChoiceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,10 @@ class ChoiceScreen extends StatelessWidget {
                         ),
                         Expanded(
                           child: FlatButton(
-                              onPressed: () {
+                              onPressed: () async{
+                                WidgetsFlutterBinding.ensureInitialized();
+                                await Firebase.initializeApp();
+                                Navigator.pop(context);
                                 Navigator.pushNamed(context, '/login1');
                               },
                               child: Text(
@@ -51,7 +55,10 @@ class ChoiceScreen extends StatelessWidget {
                         ),
                         Expanded(
                           child: FlatButton(
-                              onPressed: () {
+                              onPressed: () async {
+                                WidgetsFlutterBinding.ensureInitialized();
+                                await Firebase.initializeApp();
+                                Navigator.pop(context);
                                 Navigator.pushNamed(context, '/login2');
                               },
                               child: Text(

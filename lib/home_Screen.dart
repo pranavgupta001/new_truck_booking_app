@@ -1,10 +1,55 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
+  User user;
+
+  HomeScreen({this.user});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        appBar: AppBar(
+          title: Text('Home Screen'),
+        ),
+        drawer: Container(
+          width: 200,
+          child: Drawer(
+            child: ListView(
+              children: [
+                Container(
+                  height: 150,
+                  child: DrawerHeader(
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 30,
+                          child: Icon(Icons.home),
+                        ),
+                        SizedBox(
+                          width: 15,
+                        ),
+                        Text(user == null ? '1234567891' : user.phoneNumber),
+                      ],
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    FirebaseAuth.instance.signOut();
+                    Navigator.pushNamed(context, '/');
+                    Navigator.pop(context);
+                  },
+                  child: ListTile(
+                    title: Text('Sign Out'),
+                    trailing: Icon(Icons.exit_to_app),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
         backgroundColor: Colors.lightBlueAccent,
         body: SafeArea(
           child: Column(
