@@ -44,12 +44,10 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
   }
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
+  bool autofocus1 = true;
+  bool autofocus2 = true;
   @override
   Widget build(BuildContext context) {
-    controller1.clear();
-    controller2.clear();
-    controller3.clear();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -69,25 +67,29 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                     padding: EdgeInsets.only(
                       left: 20,
                       right: 20,
-                      top: 10,
+                      top: 20,
                       bottom: 20,
                     ),
                     child: Container(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                      child: ListView(
+                        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.manual,
                         children: [
-                          Expanded(
+                          Container(
+                            height: 70,
                             child: TextFormField(
+                              autofocus: autofocus1,
                               controller: controller1,
                               onChanged: (newValue) {
                                 loadingPoint = newValue;
                                 fillCityName(newValue);
+                                setState(() {
+                                  autofocus1 = false;
+                                });
                               },
                               decoration: InputDecoration(
                                 hintText: 'Loading Point',
                                 hintStyle:
-                                    TextStyle(fontSize: 20, color: Colors.grey),
+                                TextStyle(fontSize: 20, color: Colors.grey),
                               ),
                               validator: (String value) {
                                 if (value.isEmpty) {
@@ -96,19 +98,25 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                                   return null;
                               },
                               style:
-                                  TextStyle(fontSize: 20, color: Colors.black),
+                              TextStyle(fontSize: 20, color: Colors.black),
                             ),
                           ),
-                          Expanded(
+                          SizedBox(height: 10,),
+                          Container(
+                            height: 70,
                             child: TextFormField(
+                              autofocus: autofocus2,
                               controller: controller2,
                               onChanged: (newValue) {
                                 unloadingPoint = newValue;
+                                setState(() {
+                                  autofocus2 = false;
+                                });
                               },
                               decoration: InputDecoration(
                                 hintText: 'Unloading Point',
                                 hintStyle:
-                                    TextStyle(fontSize: 20, color: Colors.grey),
+                                TextStyle(fontSize: 20, color: Colors.grey),
                               ),
                               validator: (String value) {
                                 if (value.isEmpty) {
@@ -117,10 +125,12 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                                   return null;
                               },
                               style:
-                                  TextStyle(fontSize: 20, color: Colors.black),
+                              TextStyle(fontSize: 20, color: Colors.black),
                             ),
                           ),
-                          Expanded(
+                          SizedBox(height: 10,),
+                          Container(
+                            height: 70,
                             child: DropDownGenerator(
                               dropdownValue: 'Product Type',
                               dropdownValues: [
@@ -133,7 +143,9 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                               notAllowedValue: 'Product Type',
                             ),
                           ),
-                          Expanded(
+                          SizedBox(height: 10,),
+                          Container(
+                            height: 70,
                             child: DropDownGenerator(
                               dropdownValue: 'Truck Preference',
                               dropdownValues: [
@@ -145,7 +157,9 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                               notAllowedValue: 'Truck Preference',
                             ),
                           ),
-                          Expanded(
+                          SizedBox(height: 10,),
+                          Container(
+                            height: 70,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -170,7 +184,9 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                               ],
                             ),
                           ),
-                          Expanded(
+                          SizedBox(height: 10,),
+                          Container(
+                            height: 70,
                             child: DropDownGenerator(
                               dropdownValue: 'Weight (In Tons)',
                               dropdownValues: [
@@ -182,7 +198,9 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                               notAllowedValue: 'Weight (In Tons)',
                             ),
                           ),
-                          Expanded(
+                          SizedBox(height: 10,),
+                          Container(
+                            height: 70,
                             child: TextField(
                               controller: controller3,
                               onChanged: (newValue) {
@@ -191,10 +209,10 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                               decoration: InputDecoration(
                                 hintText: 'Comments',
                                 hintStyle:
-                                    TextStyle(fontSize: 20, color: Colors.grey),
+                                TextStyle(fontSize: 20, color: Colors.grey),
                               ),
                               style:
-                                  TextStyle(fontSize: 20, color: Colors.black),
+                              TextStyle(fontSize: 20, color: Colors.black),
                             ),
                           ),
                         ],
@@ -291,9 +309,9 @@ class DropDownGenerator extends StatefulWidget {
 
   DropDownGenerator(
       {this.dropdownValue,
-      this.dropdownValues,
-      this.dropDownNumber,
-      this.notAllowedValue});
+        this.dropdownValues,
+        this.dropDownNumber,
+        this.notAllowedValue});
 
   @override
   _DropDownGeneratorState createState() => _DropDownGeneratorState();
@@ -321,7 +339,7 @@ class _DropDownGeneratorState extends State<DropDownGenerator> {
         });
       },
       items:
-          widget.dropdownValues.map<DropdownMenuItem<String>>((String value) {
+      widget.dropdownValues.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(value),

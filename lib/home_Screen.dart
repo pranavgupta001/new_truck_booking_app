@@ -14,7 +14,6 @@ class HomeScreen extends StatelessWidget {
           title: Text('Home Screen'),
         ),
         drawer: Container(
-          width: 200,
           child: Drawer(
             child: ListView(
               children: [
@@ -30,7 +29,7 @@ class HomeScreen extends StatelessWidget {
                         SizedBox(
                           width: 15,
                         ),
-                        Text(user == null ? '1234567891' : user.phoneNumber),
+                        Text(user == null ? '+911234567891' : user.phoneNumber),
                       ],
                     ),
                   ),
@@ -38,8 +37,7 @@ class HomeScreen extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     FirebaseAuth.instance.signOut();
-                    Navigator.pushNamed(context, '/');
-                    Navigator.pop(context);
+                    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
                   },
                   child: ListTile(
                     title: Text('Sign Out'),
