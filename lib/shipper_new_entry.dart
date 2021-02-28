@@ -69,7 +69,8 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
           backgroundColor: Colors.black,
           leading: GestureDetector(
             onTap: () {
-                 Navigator.pop(context);},
+              Navigator.pop(context);
+            },
             child: Icon(Icons.arrow_back_ios, size: 25),
           ),
           title: Text(
@@ -149,34 +150,45 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                           SizedBox(
                             height: 10,
                           ),
-                          Container(
-                            height: 72,
-                            child: DropDownGenerator(
-                              dropdownValue: 'Product Type',
-                              dropdownValues: [
-                                'Product Type',
-                                'Powder',
-                                'Wire Bundles',
-                                'Liquid'
-                              ],
-                              dropDownNumber: 'one',
-                              notAllowedValue: 'Product Type',
-                            ),
-                          ),
+                          // Container(
+                          //   height: 72,
+                          //   child: DropDownGenerator(
+                          //     dropdownValue: 'Product Type',
+                          //     dropdownValues: [
+                          //       'Product Type',
+                          //       'Powder',
+                          //       'Wire Bundles',
+                          //       'Liquid'
+                          //     ],
+                          //     dropDownNumber: 'one',
+                          //     notAllowedValue: 'Product Type',
+                          //   ),
+                          // ),
                           GestureDetector(
-                              onTap: (){ showModalBottomSheet(context: context, builder: (context) => ProductTypeWidgetScreen(),);},
-                              child: Container(height: 72, child: DropDownGenerator(
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (context) => ProductTypeWidgetScreen(),
+                              );
+                            },
+                            child: Container(
+                              height: 72,
+                              child: DropDownGenerator(
                                 dropdownValue: 'Product Type',
                                 dropdownValues: [],
-                                hintText: productType == null? 'Product Type' : productType ,
+                                hintText: productType == null
+                                    ? 'Product Type'
+                                    : productType,
                                 notAllowedValue: 'Product Type',
-                              ),),),
+                              ),
+                            ),
+                          ),
                           //FlatButton(child: Container(color: Colors.lightBlueAccent, height: 72),  onPressed:(){ showModalBottomSheet(context: context, builder: (context) => ProductTypeWidgetScreen(),);}),
                           SizedBox(
                             height: 10,
                           ),
                           Container(
-                            height: 72,
+                            height: 132,
                             child: TruckPreferenceDropDown(
                               dropdownValue: 'Truck Preference',
                               notAllowedValue: 'Truck Preference',
@@ -273,7 +285,14 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                       try {
                         final createdCard = await createCardOnApi();
                         print(createdCard);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => CardScreen(userCity: widget.userCity,),),);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CardScreen(
+                              userCity: widget.userCity,
+                            ),
+                          ),
+                        );
                       } catch (e) {
                         print(e);
                       }
@@ -342,7 +361,10 @@ class _DropDownGeneratorState extends State<DropDownGenerator> {
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
       value: widget.dropdownValue,
-      hint: Text('${widget.hintText}', style: TextStyle(color: Colors.grey),),
+      hint: Text(
+        '${widget.hintText}',
+        style: TextStyle(color: Colors.grey),
+      ),
       iconDisabledColor: Colors.black54,
       elevation: 16,
       style: TextStyle(color: Colors.grey, fontSize: 18),
@@ -388,8 +410,7 @@ class TruckPreferenceDropDown extends StatefulWidget {
   String dropdownValue;
   String notAllowedValue;
 
-  TruckPreferenceDropDown(
-      {this.dropdownValue, this.notAllowedValue});
+  TruckPreferenceDropDown({this.dropdownValue, this.notAllowedValue});
 
   @override
   _TruckPreferenceDropDownState createState() =>
@@ -399,32 +420,12 @@ class TruckPreferenceDropDown extends StatefulWidget {
 class _TruckPreferenceDropDownState extends State<TruckPreferenceDropDown> {
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<String>(
-      isExpanded: true,
-      value: widget.dropdownValue,
-      elevation: 16,
-      style: TextStyle(color: Colors.grey, fontSize: 18),
-      onChanged: (String newValue) {
-        setState(() {
-          widget.dropdownValue = newValue;
-          truckPreference = newValue;
-        });
-      },
-      items: [
-        DropdownMenuItem<String>(
-          value: 'Truck Preference',
+    return ListView(
+      scrollDirection: Axis.horizontal,
+      children: [
+        GestureDetector(
           child: Container(
-            child: Row(
-              children: [
-                Text('Truck Preference'),
-              ],
-            ),
-          ),
-        ),
-        DropdownMenuItem<String>(
-          value: 'Container',
-          child: Container(
-            child: Row(
+            child: Column(
               children: [
                 Text('Container'),
                 Container(
@@ -440,10 +441,10 @@ class _TruckPreferenceDropDownState extends State<TruckPreferenceDropDown> {
             ),
           ),
         ),
-        DropdownMenuItem<String>(
-          value: 'Hyva',
+        SizedBox(width: 4,),
+        GestureDetector(
           child: Container(
-            child: Row(
+            child: Column(
               children: [
                 Text('Hyva'),
                 Container(
@@ -459,10 +460,10 @@ class _TruckPreferenceDropDownState extends State<TruckPreferenceDropDown> {
             ),
           ),
         ),
-        DropdownMenuItem<String>(
-          value: 'LCV',
+        SizedBox(width: 4,),
+        GestureDetector(
           child: Container(
-            child: Row(
+            child: Column(
               children: [
                 Text('LCV'),
                 Container(
@@ -478,81 +479,66 @@ class _TruckPreferenceDropDownState extends State<TruckPreferenceDropDown> {
             ),
           ),
         ),
-        DropdownMenuItem<String>(
-          value: 'Tanker',
-          child: Container(
-            child: Row(
-              children: [
-                Text('Tanker'),
-                Container(
-                  height: 100,
-                  width: 100,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/tanker.jpeg'),
-                    ),
+        SizedBox(width: 4,),
+        Container(
+          child: Column(
+            children: [
+              Text('Tanker'),
+              Container(
+                height: 100,
+                width: 100,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/tanker.jpeg'),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-        DropdownMenuItem<String>(
-          value: 'Trailer',
-          child: Container(
-            child: Row(
-              children: [
-                Text('Trailer'),
-                Container(
-                  height: 100,
-                  width: 100,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/trailer.jpeg'),
-                    ),
+        SizedBox(width: 4,),
+        Container(
+          child: Column(
+            children: [
+              Text('Trailer'),
+              Container(
+                height: 100,
+                width: 110,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/trailer.jpeg'),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-        DropdownMenuItem<String>(
-          value: 'Truck',
-          child: Container(
-            child: Row(
-              children: [
-                Text('Truck'),
-                Container(
-                  height: 100,
-                  width: 100,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/truck.jpeg'),
-                    ),
+        SizedBox(width: 4,),
+        Container(
+          child: Column(
+            children: [
+              Text('Truck'),
+              Container(
+                height: 100,
+                width: 100,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/truck.jpeg'),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ],
-      validator: (String value) {
-        if (widget.notAllowedValue == null) {
-          return null;
-        }
-        if (value != widget.notAllowedValue) {
-          return null;
-        } else {
-          return 'Truck Preference is Required';
-        }
-      },
     );
   }
 }
 
 class ProductTypeWidgetScreen extends StatefulWidget {
   @override
-  _ProductTypeWidgetScreenState createState() => _ProductTypeWidgetScreenState();
+  _ProductTypeWidgetScreenState createState() =>
+      _ProductTypeWidgetScreenState();
 }
 
 class _ProductTypeWidgetScreenState extends State<ProductTypeWidgetScreen> {
@@ -567,12 +553,15 @@ class _ProductTypeWidgetScreenState extends State<ProductTypeWidgetScreen> {
   Widget build(BuildContext context) {
     return Container(
       height: 800,
-      color : Color(0xff757575),
+      color: Color(0xff757575),
       child: Container(
         padding: EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20),),
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(20),
+            topLeft: Radius.circular(20),
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -580,20 +569,21 @@ class _ProductTypeWidgetScreenState extends State<ProductTypeWidgetScreen> {
           children: [
             Container(
               height: 50,
-              child: Center(child: Text('Select Product Type'),),
+              child: Center(
+                child: Text('Select Product Type'),
+              ),
               color: Color(0xFFF3F2F1),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     setState(() {
                       productType = 'Packaged/ Consumer boxes';
                       color1 = colorSelected;
                       Navigator.pop(context);
                     });
-
                   },
                   child: Container(
                     color: color1,
@@ -603,36 +593,26 @@ class _ProductTypeWidgetScreenState extends State<ProductTypeWidgetScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Container(height: 40, width: 40, decoration: BoxDecoration(image:DecorationImage(image: AssetImage('assets/productTypeImages/material1.jpeg'),),),),
-                        Text('Packaged/ \n Consumer boxes', textAlign: TextAlign.center,),
+                        Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(
+                                  'assets/productTypeImages/material1.jpeg'),
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'Packaged/ \n Consumer boxes',
+                          textAlign: TextAlign.center,
+                        ),
                       ],
                     ),
                   ),
                 ),
                 GestureDetector(
-                  onTap: (){
-                    Navigator.pop(context);
-                    setState(() {
-                      colorUnselected = colorSelected;
-                    });
-
-                  },
-                  child: Container(
-                    color: colorUnselected,
-                    height: 100,
-                    width: 100,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(height: 40, width: 40, decoration: BoxDecoration(image:DecorationImage(image: AssetImage('assets/productTypeImages/material1.jpeg'),),),),
-                        Text('Food and \n agriculture',textAlign: TextAlign.center,),
-                      ],
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     Navigator.pop(context);
                     setState(() {
                       colorUnselected = colorSelected;
@@ -646,8 +626,53 @@ class _ProductTypeWidgetScreenState extends State<ProductTypeWidgetScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Container(height: 40, width: 40, decoration: BoxDecoration(image:DecorationImage(image: AssetImage('assets/productTypeImages/material1.jpeg'),),),),
-                        Text('Machine/\nAuto Parts',textAlign: TextAlign.center,),
+                        Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(
+                                  'assets/productTypeImages/material1.jpeg'),
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'Food and \n agriculture',
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                    setState(() {
+                      colorUnselected = colorSelected;
+                    });
+                  },
+                  child: Container(
+                    color: colorUnselected,
+                    height: 100,
+                    width: 100,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(
+                                  'assets/productTypeImages/material1.jpeg'),
+                            ),
+                          ),
+                        ),
+                        Text(
+                          'Machine/\nAuto Parts',
+                          textAlign: TextAlign.center,
+                        ),
                       ],
                     ),
                   ),
