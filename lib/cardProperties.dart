@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 class DetailCard extends StatelessWidget {
   String productType;
   String loadingPoint;
@@ -12,71 +13,144 @@ class DetailCard extends StatelessWidget {
 
   DetailCard(
       {this.loadingPoint,
-        this.unloadingPoint,
-        this.productType,
-        this.truckPreference,
-        this.noOfTrucks,
-        this.weight,
-        this.isPending,
-        this.comments,
-        this.isCommentsEmpty});
+      this.unloadingPoint,
+      this.productType,
+      this.truckPreference,
+      this.noOfTrucks,
+      this.weight,
+      this.isPending,
+      this.comments,
+      this.isCommentsEmpty});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 5),
-      color: Colors.lightGreenAccent,
-      padding: EdgeInsets.only(left: 15, top: 5, bottom: 5, right: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'From $loadingPoint To $unloadingPoint',
-                style: TextStyle(
-                  fontSize: 18,
+    return Card(
+      color: Color(0xFFF3F2F1),
+      elevation: 5,
+      child: Container(
+        margin: EdgeInsets.all(8),
+        padding: EdgeInsets.only(right: 8, top: 10, bottom: 8, left: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.symmetric(
+                      horizontal: BorderSide(
+                        color: Colors.grey,
+                        width: 0.5,
+                      ),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/tanker.jpeg'),
+                            // colorFilter: ColorFilter.mode(
+                            //     Colors.white.withOpacity(0.8), BlendMode.dstATop),
+                          ),
+                        ),
+                      ),
+                      // CircleAvatar(
+                      //   radius: 25,
+                      //   backgroundColor: Colors.black45,
+                      //   // child: Icon(
+                      //   //   Icons.upload_rounded,
+                      //   //   color: Colors.white,
+                      //   // ),
+                      // ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Text(
+                        '$loadingPoint - $unloadingPoint',
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Text(
-                'Product Type: $productType Truck Preference: $truckPreference',
-                style: TextStyle(
-                  fontSize: 18,
+                SizedBox(
+                  height: 8,
                 ),
-              ),
-              Text(
-                'Trucks Required: $noOfTrucks        Weight : $weight ',
-                style: TextStyle(
-                  fontSize: 18,
+                Text(
+                  'Product Type: $productType',
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
                 ),
-              ),
-              isCommentsEmpty
-                  ? Container()
-                  : Text(
-                'Comments : $comments ',
-                style: TextStyle(
-                  fontSize: 18,
+                SizedBox(
+                  height: 3,
                 ),
-              ),
-            ],
-          ),
-          Container(
-              color: isPending ? Colors.red : Colors.green,
-              padding: EdgeInsets.all(3),
-              child: Text(
-                isPending ? 'Pending' : 'Approved',
-                style: TextStyle(fontSize: 18, color: Colors.white),
-                textAlign: TextAlign.right,
-              )),
-        ],
+                Text(
+                  'Truck Type: $truckPreference',
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+                SizedBox(
+                  height: 3,
+                ),
+                Text(
+                  'Trucks Required: $noOfTrucks',
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+                SizedBox(
+                  height: 3,
+                ),
+                Text(
+                  'Weight : $weight ',
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+                SizedBox(
+                  height: 3,
+                ),
+                isCommentsEmpty
+                    ? Container()
+                    : Container(
+                        child: Text(
+                        'Comments : $comments ',
+                        style: TextStyle(
+                          fontSize: 18,
+                        ),
+                      )),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Container(
+                    color: isPending ? Colors.red : Colors.green,
+                    padding: EdgeInsets.all(3),
+                    child: Text(
+                      isPending ? 'Pending' : 'Approved',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                      textAlign: TextAlign.right,
+                    )),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-
-
 
 //
 //
