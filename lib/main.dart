@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:truck_booking_app/providerData.dart';
 import 'shipper_login_screen.dart';
 import 'choice_screen.dart';
 import 'transporter_login_screen.dart';
@@ -20,19 +22,22 @@ class FlashChat extends StatelessWidget {
             return loading();
           }
           if (snapshot.connectionState == ConnectionState.done) {
-            return MaterialApp(
-              initialRoute:
-                  FirebaseAuth.instance.currentUser == null ? '/' : '/home',
-              routes: {
-                '/': (context) => ChoiceScreen(),
-                '/login1': (context) => ShipperLoginScreen(),
-                '/login2': (context) => TransporterLoginScreen(),
-                '/newEntry': (context) => ShipperNewEntryScreen(),
-                '/cards': (context) => CardScreen(),
-                '/home': (context) => HomeScreen(
-                      user: FirebaseAuth.instance.currentUser,
-                    ),
-              },
+            return ChangeNotifierProvider<NewDataByShipper>(
+              create: (context) => NewDataByShipper(),
+              child: MaterialApp(
+                initialRoute:
+                    FirebaseAuth.instance.currentUser == null ? '/' : '/home',
+                routes: {
+                  '/': (context) => ChoiceScreen(),
+                  '/login1': (context) => ShipperLoginScreen(),
+                  '/login2': (context) => TransporterLoginScreen(),
+                  '/newEntry': (context) => ShipperNewEntryScreen(),
+                  '/cards': (context) => CardScreen(),
+                  '/home': (context) => HomeScreen(
+                        user: FirebaseAuth.instance.currentUser,
+                      ),
+                },
+              ),
             );
           }
           return loading();

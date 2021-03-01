@@ -2,24 +2,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:truck_booking_app/backend_connection.dart';
 import 'dart:convert';
-import 'package:geolocator/geolocator.dart';
-import 'package:geocoder/geocoder.dart';
-import 'package:location_permissions/location_permissions.dart';
 import 'package:truck_booking_app/cardGenerator.dart';
-import 'package:truck_booking_app/home_Screen.dart';
+import 'package:provider/provider.dart';
+import 'package:truck_booking_app/noOfTrucks_modal_screen.dart';
+import 'package:truck_booking_app/weight_modal_screen.dart';
+import 'backend_connection.dart';
+import 'providerData.dart';
+import 'dropDownGenerator.dart';
+import 'modal_widget_screen.dart';
+import 'truck_type_card_gen.dart';
 
 String mapKey = "AIzaSyCTVVijIWofDrI6LpSzhUqJIF90X-iyZmE";
-String productType;
-String loadingPoint;
-String unloadingPoint;
-String truckPreference;
-String noOfTrucks = '1';
-String weight;
-bool isPending = true;
-String comments;
-bool isCommentsEmpty = true;
+
 var controller1 = TextEditingController();
 var controller2 = TextEditingController();
 var controller3 = TextEditingController();
@@ -37,7 +32,6 @@ class ShipperNewEntryScreen extends StatefulWidget {
 class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
   @override
   String city = ' ';
-
   void fillCityName(String cityName) async {
     if (cityName.length > 1) {
       String autoCompleteUrl =
@@ -56,7 +50,38 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
     controller3.clear();
     controller1 = TextEditingController(text: widget.userCity);
   }
-
+  Future<CardsModal> createCardOnApi() async {
+    print(Provider.of<NewDataByShipper>(context, listen: false).loadingPoint);
+    print(Provider.of<NewDataByShipper>(context, listen: false).unloadingPoint);
+    print(Provider.of<NewDataByShipper>(context, listen: false).productType);
+    print( Provider.of<NewDataByShipper>(context, listen: false).truckPreference);
+    print(Provider.of<NewDataByShipper>(context, listen: false).noOfTrucks);
+    print(Provider.of<NewDataByShipper>(context, listen: false).weight);
+    print(Provider.of<NewDataByShipper>(context, listen: false).isCommentsEmpty );
+    print( Provider.of<NewDataByShipper>(context, listen: false).comments);
+    Map data = {
+      "loadingPoint": Provider.of<NewDataByShipper>(context, listen: false).loadingPoint,
+      "unloadingPoint": Provider.of<NewDataByShipper>(context, listen: false).unloadingPoint,
+      "productType": Provider.of<NewDataByShipper>(context, listen: false).productType,
+      "truckType": Provider.of<NewDataByShipper>(context, listen: false).truckPreference,
+      "noOfTrucks": Provider.of<NewDataByShipper>(context, listen: false).noOfTrucks,
+      "weight": Provider.of<NewDataByShipper>(context, listen: false).weight,
+      "comment": Provider.of<NewDataByShipper>(context, listen: false).isCommentsEmpty ? '' : Provider.of<NewDataByShipper>(context, listen: false).comments
+    };
+    String body = json.encode(data);
+    final String apiUrl = "http://10.0.2.2:49980/load";
+    final response = await http.post(apiUrl,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: body);
+    if (response.statusCode == 201) {
+      final String responseString = response.body;
+      return cardsModalFromJson(responseString);
+    } else {
+      return null;
+    }
+  }
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
@@ -82,31 +107,31 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
           child: Form(
             key: formKey,
             autovalidateMode: AutovalidateMode.always,
+            onChanged: () {
+              Form.of(primaryFocus.context).save();
+            },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Expanded(
                   child: Padding(
-                    padding: EdgeInsets.only(
-                      left: 20,
-                      right: 20,
-                      top: 20,
-                      bottom: 20,
-                    ),
+                    padding: EdgeInsets.all(20),
                     child: Container(
                       color: Color(0xFFF3F2F1),
                       child: ListView(
                         keyboardDismissBehavior:
-                            ScrollViewKeyboardDismissBehavior.manual,
+                            ScrollViewKeyboardDismissBehavior.onDrag,
                         children: [
                           Container(
                             height: 72,
                             child: TextFormField(
                               controller: controller1,
+                              onFieldSubmitted: (String value){ Provider.of<NewDataByShipper>(context,listen: false).updateLoadingPoint(newValue:value);} ,
                               onChanged: (newValue) {
-                                loadingPoint = newValue;
+                                Provider.of<NewDataByShipper>(context, listen: false).updateLoadingPoint(newValue: newValue);
                                 fillCityName(newValue);
                               },
+                              onSaved: (value){Provider.of<NewDataByShipper>(context, listen: false).updateLoadingPoint(newValue: value);},
                               decoration: InputDecoration(
                                 hintText: 'Loading Point',
                                 hintStyle:
@@ -130,8 +155,10 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                             child: TextFormField(
                               controller: controller2,
                               onChanged: (newValue) {
-                                unloadingPoint = newValue;
+                                Provider.of<NewDataByShipper>(context, listen: false).updateUnloadingPoint(newValue: newValue);
                               },
+                              onSaved: (value){Provider.of<NewDataByShipper>(context, listen: false).updateUnloadingPoint(newValue: value);},
+
                               decoration: InputDecoration(
                                 hintText: 'Unloading Point',
                                 hintStyle:
@@ -150,48 +177,40 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                           SizedBox(
                             height: 10,
                           ),
-                          // Container(
-                          //   height: 72,
-                          //   child: DropDownGenerator(
-                          //     dropdownValue: 'Product Type',
-                          //     dropdownValues: [
-                          //       'Product Type',
-                          //       'Powder',
-                          //       'Wire Bundles',
-                          //       'Liquid'
-                          //     ],
-                          //     dropDownNumber: 'one',
-                          //     notAllowedValue: 'Product Type',
-                          //   ),
-                          // ),
+
                           GestureDetector(
                             onTap: () {
-                              showModalBottomSheet(
-                                context: context,
-                                builder: (context) => ProductTypeWidgetScreen(),
-                              );
+                              showDialog(context: context, builder: (context)=> ProductTypeWidgetScreen());
                             },
                             child: Container(
                               height: 72,
                               child: DropDownGenerator(
                                 dropdownValue: 'Product Type',
                                 dropdownValues: [],
-                                hintText: productType == null
+                                hintText: Provider.of<NewDataByShipper>(context).productType== null
                                     ? 'Product Type'
-                                    : productType,
+                                    :  Provider.of<NewDataByShipper>(context).productType,
                                 notAllowedValue: 'Product Type',
                               ),
                             ),
                           ),
-                          //FlatButton(child: Container(color: Colors.lightBlueAccent, height: 72),  onPressed:(){ showModalBottomSheet(context: context, builder: (context) => ProductTypeWidgetScreen(),);}),
                           SizedBox(
                             height: 10,
                           ),
-                          Container(
-                            height: 132,
-                            child: TruckPreferenceDropDown(
-                              dropdownValue: 'Truck Preference',
-                              notAllowedValue: 'Truck Preference',
+                          GestureDetector(
+                            onTap: () {
+                              showDialog(context: context, builder: (context)=> TruckTypeWidgetScreen());
+                            },
+                            child: Container(
+                              height: 72,
+                              child: DropDownGenerator(
+                                dropdownValue: 'Truck Preference',
+                                dropdownValues: [],
+                                hintText: Provider.of<NewDataByShipper>(context).truckPreference== null
+                                    ? 'Truck Preference'
+                                    :  Provider.of<NewDataByShipper>(context).truckPreference,
+                                notAllowedValue: 'Truck Preference',
+                              ),
                             ),
                           ),
                           SizedBox(
@@ -207,16 +226,21 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                                       fontSize: 18, color: Colors.grey),
                                 ),
                                 Expanded(
-                                  child: DropDownGenerator(
-                                    dropdownValue: '1',
-                                    dropdownValues: [
-                                      '1',
-                                      '2',
-                                      '3',
-                                      '4',
-                                      '5',
-                                    ],
-                                    dropDownNumber: 'three',
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      showDialog(context: context, builder: (context)=>NoOfTrucksWidgetScreen());
+                                    },
+                                    child: Container(
+                                      height: 72,
+                                      child: DropDownGenerator(
+                                        dropdownValue: 'No Of Trucks',
+                                        dropdownValues: [],
+                                        hintText: Provider.of<NewDataByShipper>(context).noOfTrucks== '1'
+                                            ? '1'
+                                            :  Provider.of<NewDataByShipper>(context).noOfTrucks,
+                                        notAllowedValue:'No Of Trucks' ,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -225,17 +249,20 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                           SizedBox(
                             height: 10,
                           ),
-                          Container(
-                            height: 72,
-                            child: DropDownGenerator(
-                              dropdownValue: 'Weight (In Tons)',
-                              dropdownValues: [
-                                'Weight (In Tons)',
-                                '10 ton',
-                                '20 ton'
-                              ],
-                              dropDownNumber: 'four',
-                              notAllowedValue: 'Weight (In Tons)',
+                          GestureDetector(
+                            onTap: () {
+                              showDialog(context: context, builder: (context)=>WeightWidgetScreen());
+                            },
+                            child: Container(
+                              height: 72,
+                              child: DropDownGenerator(
+                                dropdownValue: 'Weight(In Tons)',
+                                dropdownValues: [],
+                                hintText: Provider.of<NewDataByShipper>(context).weight== null
+                                    ? 'Weight (In Tons)'
+                                    :  Provider.of<NewDataByShipper>(context).weight,
+                                notAllowedValue: 'Weight (In Tons)',
+                              ),
                             ),
                           ),
                           SizedBox(
@@ -246,7 +273,7 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                             child: TextField(
                               controller: controller3,
                               onChanged: (newValue) {
-                                comments = newValue;
+                                Provider.of<NewDataByShipper>(context, listen: false).updateComments(newValue: newValue);
                               },
                               decoration: InputDecoration(
                                 hintText: 'Comments',
@@ -269,22 +296,34 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                       if (!formKey.currentState.validate()) {
                         return;
                       }
-                      if (comments != null) {
-                        if (comments.isNotEmpty) {
-                          if (comments != '') {
-                            isCommentsEmpty = false;
+                      if (Provider.of<NewDataByShipper>(context, listen: false).productType == null){
+                        showDialog(context: context, builder: (context) => ProductTypeWidgetScreen());
+                      }
+                      else if (Provider.of<NewDataByShipper>(context, listen: false).truckPreference == null){
+                        showDialog(context: context, builder: (context) => TruckTypeWidgetScreen());
+                      }
+                      // else if (Provider.of<NewDataByShipper>(context, listen: false).noOfTrucks == null){
+                      //   showDialog(context: context, builder: (context) => NoOfTrucksWidgetScreen());
+                      // }
+                      else if (Provider.of<NewDataByShipper>(context, listen: false).weight == null){
+                        showDialog(context: context, builder: (context) => WeightWidgetScreen());
+                      }
+                      else{
+                      if (Provider.of<NewDataByShipper>(context, listen: false).comments != null) {
+                        if (Provider.of<NewDataByShipper>(context, listen: false).comments.isNotEmpty) {
+                          if (Provider.of<NewDataByShipper>(context, listen: false).comments != '') {
+                            Provider.of<NewDataByShipper>(context, listen: false).updateIsCommentsEmpty(newValue: false);
                           } else {
-                            isCommentsEmpty = true;
+                            Provider.of<NewDataByShipper>(context, listen: false).updateIsCommentsEmpty(newValue: true);
                           }
                         } else {
-                          isCommentsEmpty = true;
+                          Provider.of<NewDataByShipper>(context, listen: false).updateIsCommentsEmpty(newValue: true);
                         }
                       } else {
-                        isCommentsEmpty = true;
+                        Provider.of<NewDataByShipper>(context, listen: false).updateIsCommentsEmpty(newValue: true);
                       }
                       try {
                         final createdCard = await createCardOnApi();
-                        print(createdCard);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -295,7 +334,7 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                         );
                       } catch (e) {
                         print(e);
-                      }
+                      }}
                     },
                     color: Color(0xFF043979),
                     child: Text(
@@ -313,375 +352,17 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
   }
 }
 
-Future<CardsModal> createCardOnApi() async {
-  Map data = {
-    "loadingPoint": loadingPoint,
-    "unloadingPoint": unloadingPoint,
-    "productType": productType,
-    "truckType": truckPreference,
-    "noOfTrucks": noOfTrucks,
-    "weight": weight,
-    "comment": isCommentsEmpty ? '' : comments
-  };
-  String body = json.encode(data);
-  final String apiUrl = "http://10.0.2.2:63444/load";
-  final response = await http.post(apiUrl,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: body);
-  if (response.statusCode == 201) {
-    final String responseString = response.body;
-    return cardsModalFromJson(responseString);
-  } else {
-    return null;
-  }
-}
-
-class DropDownGenerator extends StatefulWidget {
-  String dropdownValue;
-  List<String> dropdownValues;
-  String notAllowedValue;
-  String dropDownNumber;
-  String hintText = ' ';
-
-  DropDownGenerator(
-      {this.dropdownValue,
-      this.dropdownValues,
-      this.dropDownNumber,
-      this.notAllowedValue,
-      this.hintText});
-
-  @override
-  _DropDownGeneratorState createState() => _DropDownGeneratorState();
-}
-
-class _DropDownGeneratorState extends State<DropDownGenerator> {
-  @override
-  Widget build(BuildContext context) {
-    return DropdownButtonFormField<String>(
-      value: widget.dropdownValue,
-      hint: Text(
-        '${widget.hintText}',
-        style: TextStyle(color: Colors.grey),
-      ),
-      iconDisabledColor: Colors.black54,
-      elevation: 16,
-      style: TextStyle(color: Colors.grey, fontSize: 18),
-      onChanged: (String newValue) {
-        setState(() {
-          widget.dropdownValue = newValue;
-          if (widget.dropDownNumber == 'one') {
-            productType = newValue;
-          } else if (widget.dropDownNumber == 'three') {
-            noOfTrucks = newValue;
-          } else if (widget.dropDownNumber == 'four') {
-            weight = newValue;
-          }
-        });
-      },
-      items:
-          widget.dropdownValues.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-      validator: (String value) {
-        if (widget.notAllowedValue == null) {
-          return null;
-        }
-        if (value != widget.notAllowedValue) {
-          return null;
-        } else {
-          if (widget.dropDownNumber == 'one') {
-            return 'Product Type is Required';
-          } else if (widget.dropDownNumber == 'four') {
-            return 'weight is Required';
-          }
-          return null;
-        }
-      },
-    );
-  }
-}
-
-class TruckPreferenceDropDown extends StatefulWidget {
-  String dropdownValue;
-  String notAllowedValue;
-
-  TruckPreferenceDropDown({this.dropdownValue, this.notAllowedValue});
-
-  @override
-  _TruckPreferenceDropDownState createState() =>
-      _TruckPreferenceDropDownState();
-}
-
-class _TruckPreferenceDropDownState extends State<TruckPreferenceDropDown> {
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      scrollDirection: Axis.horizontal,
-      children: [
-        GestureDetector(
-          child: Container(
-            child: Column(
-              children: [
-                Text('Container'),
-                Container(
-                  height: 100,
-                  width: 100,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/container.jpeg'),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        SizedBox(width: 4,),
-        GestureDetector(
-          child: Container(
-            child: Column(
-              children: [
-                Text('Hyva'),
-                Container(
-                  height: 100,
-                  width: 100,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/hyva.jpeg'),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        SizedBox(width: 4,),
-        GestureDetector(
-          child: Container(
-            child: Column(
-              children: [
-                Text('LCV'),
-                Container(
-                  height: 100,
-                  width: 100,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/lcv.jpeg'),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        SizedBox(width: 4,),
-        Container(
-          child: Column(
-            children: [
-              Text('Tanker'),
-              Container(
-                height: 100,
-                width: 100,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/tanker.jpeg'),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(width: 4,),
-        Container(
-          child: Column(
-            children: [
-              Text('Trailer'),
-              Container(
-                height: 100,
-                width: 110,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/trailer.jpeg'),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(width: 4,),
-        Container(
-          child: Column(
-            children: [
-              Text('Truck'),
-              Container(
-                height: 100,
-                width: 100,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/truck.jpeg'),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class ProductTypeWidgetScreen extends StatefulWidget {
-  @override
-  _ProductTypeWidgetScreenState createState() =>
-      _ProductTypeWidgetScreenState();
-}
-
-class _ProductTypeWidgetScreenState extends State<ProductTypeWidgetScreen> {
-  Color colorUnselected = Colors.white;
-
-  Color colorSelected = Colors.lightBlueAccent;
-  Color color1;
-  Color color2;
-  Color color3;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 800,
-      color: Color(0xff757575),
-      child: Container(
-        padding: EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(20),
-            topLeft: Radius.circular(20),
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              height: 50,
-              child: Center(
-                child: Text('Select Product Type'),
-              ),
-              color: Color(0xFFF3F2F1),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      productType = 'Packaged/ Consumer boxes';
-                      color1 = colorSelected;
-                      Navigator.pop(context);
-                    });
-                  },
-                  child: Container(
-                    color: color1,
-                    height: 100,
-                    width: 100,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage(
-                                  'assets/productTypeImages/material1.jpeg'),
-                            ),
-                          ),
-                        ),
-                        Text(
-                          'Packaged/ \n Consumer boxes',
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                    setState(() {
-                      colorUnselected = colorSelected;
-                    });
-                  },
-                  child: Container(
-                    color: colorUnselected,
-                    height: 100,
-                    width: 100,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage(
-                                  'assets/productTypeImages/material1.jpeg'),
-                            ),
-                          ),
-                        ),
-                        Text(
-                          'Food and \n agriculture',
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                    setState(() {
-                      colorUnselected = colorSelected;
-                    });
-                  },
-                  child: Container(
-                    color: colorUnselected,
-                    height: 100,
-                    width: 100,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage(
-                                  'assets/productTypeImages/material1.jpeg'),
-                            ),
-                          ),
-                        ),
-                        Text(
-                          'Machine/\nAuto Parts',
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
+// class AlertForNull extends StatefulWidget {
+//   @override
+//   _AlertForNullState createState() => _AlertForNullState();
+// }
+//
+// class _AlertForNullState extends State<AlertForNull> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return AlertDialog(content: SingleChildScrollView(
+//         child: ListBody(children: [
+//
+//         ],),),);
+//   }
+// }

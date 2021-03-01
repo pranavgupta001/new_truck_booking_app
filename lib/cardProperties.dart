@@ -62,19 +62,11 @@ class DetailCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                      // CircleAvatar(
-                      //   radius: 25,
-                      //   backgroundColor: Colors.black45,
-                      //   // child: Icon(
-                      //   //   Icons.upload_rounded,
-                      //   //   color: Colors.white,
-                      //   // ),
-                      // ),
                       SizedBox(
                         width: 8,
                       ),
                       Text(
-                        '$loadingPoint - $unloadingPoint',
+                        '$loadingPoint ---> $unloadingPoint',
                         style: TextStyle(
                           fontSize: 20,
                         ),
