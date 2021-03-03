@@ -2,13 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:truck_booking_app/providerData.dart';
-import 'shipper_login_screen.dart';
-import 'choice_screen.dart';
-import 'transporter_login_screen.dart';
-import 'shipper_new_entry.dart';
-import 'cardGenerator.dart';
-import 'home_Screen.dart';
+import 'package:truck_booking_app/screens/ts_find_load.dart';
+import 'file:///C:/Users/chira/flutter_app/test1_truck_booking_app/lib/widgets/providerData.dart';
+import 'screens/shipper_login_screen.dart';
+import 'screens/choice_screen.dart';
+import 'screens/transporter_login_screen.dart';
+import 'screens/shipper_new_entry.dart';
+import 'screens/cardGenerator.dart';
+import 'screens/home_Screen.dart';
 
 void main() => runApp(FlashChat());
 
@@ -36,6 +37,7 @@ class FlashChat extends StatelessWidget {
                   '/home': (context) => HomeScreen(
                         user: FirebaseAuth.instance.currentUser,
                       ),
+                  '/findLoad' : (context) => FindLoadScreen(),
                 },
               ),
             );

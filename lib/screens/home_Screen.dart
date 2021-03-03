@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:location_permissions/location_permissions.dart';
-import 'package:truck_booking_app/shipper_new_entry.dart';
+import 'file:///C:/Users/chira/flutter_app/test1_truck_booking_app/lib/screens/shipper_new_entry.dart';
 
 import 'cardGenerator.dart';
 

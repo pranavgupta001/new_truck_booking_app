@@ -54,5 +54,17 @@ class NewDataByShipper extends ChangeNotifier {
     print(isCommentsEmpty);
     notifyListeners();
   }
+  void clearAll(){
+    loadingPoint = null;
+    unloadingPoint = null;
+    productType = null;
+    truckPreference = null;
+    noOfTrucks = '1';
+    weight = null;
+    isPending = true;
+    comments = null;
+    isCommentsEmpty = true;
+    notifyListeners();
+  }
 
 }

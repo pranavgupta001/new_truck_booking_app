@@ -3,15 +3,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:truck_booking_app/cardGenerator.dart';
+import 'file:///C:/Users/chira/flutter_app/test1_truck_booking_app/lib/screens/cardGenerator.dart';
 import 'package:provider/provider.dart';
-import 'package:truck_booking_app/noOfTrucks_modal_screen.dart';
-import 'package:truck_booking_app/weight_modal_screen.dart';
-import 'backend_connection.dart';
-import 'providerData.dart';
-import 'dropDownGenerator.dart';
-import 'modal_widget_screen.dart';
-import 'truck_type_card_gen.dart';
+import 'file:///C:/Users/chira/flutter_app/test1_truck_booking_app/lib/widgets/noOfTrucks_modal_screen.dart';
+import 'file:///C:/Users/chira/flutter_app/test1_truck_booking_app/lib/widgets/weight_modal_screen.dart';
+import '../widgets/backend_connection.dart';
+import '../widgets/providerData.dart';
+import '../widgets/dropDownGenerator.dart';
+import '../widgets/product_type_modal_screen.dart';
+import '../widgets/truck_type_modal_screen.dart';
 
 String mapKey = "AIzaSyCTVVijIWofDrI6LpSzhUqJIF90X-iyZmE";
 
@@ -69,13 +69,18 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
       "comment": Provider.of<NewDataByShipper>(context, listen: false).isCommentsEmpty ? '' : Provider.of<NewDataByShipper>(context, listen: false).comments
     };
     String body = json.encode(data);
-    final String apiUrl = "http://10.0.2.2:49980/load";
+    final String apiUrl = "http://10.0.2.2:50186/load";
     final response = await http.post(apiUrl,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: body);
-    if (response.statusCode == 201) {
+    print('dsjnmks');
+    Provider.of<NewDataByShipper>(context,listen: false).clearAll();
+    ProductTypeWidgetScreen productTypeWidgetScreen =  new ProductTypeWidgetScreen();
+    productTypeWidgetScreen.clear_all();
+    print(response.statusCode);
+    if (response.statusCode == 200) {
       final String responseString = response.body;
       return cardsModalFromJson(responseString);
     } else {
@@ -95,6 +100,7 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
           leading: GestureDetector(
             onTap: () {
               Navigator.pop(context);
+              // Provider.of<NewDataByShipper>(context,listen: false).clearAll();
             },
             child: Icon(Icons.arrow_back_ios, size: 25),
           ),
@@ -126,19 +132,19 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                             height: 72,
                             child: TextFormField(
                               controller: controller1,
-                              onFieldSubmitted: (String value){ Provider.of<NewDataByShipper>(context,listen: false).updateLoadingPoint(newValue:value);} ,
+                              onFieldSubmitted: (String value){ Provider.of<NewDataByShipper>(context, listen: false).updateLoadingPoint(newValue:value.trim());} ,
                               onChanged: (newValue) {
-                                Provider.of<NewDataByShipper>(context, listen: false).updateLoadingPoint(newValue: newValue);
+                                Provider.of<NewDataByShipper>(context, listen: false).updateLoadingPoint(newValue: newValue.trim());
                                 fillCityName(newValue);
                               },
-                              onSaved: (value){Provider.of<NewDataByShipper>(context, listen: false).updateLoadingPoint(newValue: value);},
+                              onSaved: (value){Provider.of<NewDataByShipper>(context, listen: false).updateLoadingPoint(newValue: value.trim());},
                               decoration: InputDecoration(
                                 hintText: 'Loading Point',
                                 hintStyle:
                                     TextStyle(fontSize: 20, color: Colors.grey),
                               ),
                               validator: (String value) {
-                                if (value.isEmpty) {
+                                if (value.trim().isEmpty) {
                                   return 'Loading Point is Required';
                                 } else
                                   return null;
@@ -155,9 +161,9 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                             child: TextFormField(
                               controller: controller2,
                               onChanged: (newValue) {
-                                Provider.of<NewDataByShipper>(context, listen: false).updateUnloadingPoint(newValue: newValue);
+                                Provider.of<NewDataByShipper>(context, listen: false).updateUnloadingPoint(newValue: newValue.trim());
                               },
-                              onSaved: (value){Provider.of<NewDataByShipper>(context, listen: false).updateUnloadingPoint(newValue: value);},
+                              onSaved: (value){Provider.of<NewDataByShipper>(context, listen: false).updateUnloadingPoint(newValue: value.trim());},
 
                               decoration: InputDecoration(
                                 hintText: 'Unloading Point',
@@ -165,7 +171,7 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                                     TextStyle(fontSize: 20, color: Colors.grey),
                               ),
                               validator: (String value) {
-                                if (value.isEmpty) {
+                                if (value.trim().isEmpty) {
                                   return 'Unloading Point is Required';
                                 } else
                                   return null;
@@ -228,7 +234,7 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                                 Expanded(
                                   child: GestureDetector(
                                     onTap: () {
-                                      showDialog(context: context, builder: (context)=>NoOfTrucksWidgetScreen());
+                                      showDialog(context: context, builder: (context)=> NoOfTrucksWidgetScreen());
                                     },
                                     child: Container(
                                       height: 72,
@@ -351,18 +357,3 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
     );
   }
 }
-
-// class AlertForNull extends StatefulWidget {
-//   @override
-//   _AlertForNullState createState() => _AlertForNullState();
-// }
-//
-// class _AlertForNullState extends State<AlertForNull> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return AlertDialog(content: SingleChildScrollView(
-//         child: ListBody(children: [
-//
-//         ],),),);
-//   }
-// }

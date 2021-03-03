@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:truck_booking_app/providerData.dart';
+import 'file:///C:/Users/chira/flutter_app/test1_truck_booking_app/lib/widgets/providerData.dart';
 
 Color color_Unselected = Colors.white;
 Color color_Selected = Colors.black45;
@@ -16,6 +16,17 @@ class TruckTypeWidgetScreen extends StatefulWidget {
   _TruckTypeWidgetScreenState createState() => _TruckTypeWidgetScreenState();
 }
 class _TruckTypeWidgetScreenState extends State<TruckTypeWidgetScreen> {
+  @override
+  void clear_all(){
+    color_1 = color_Unselected;
+  color_2 = color_Unselected;
+  color_3 = color_Unselected;
+  color_4 = color_Unselected;
+  color_5 = color_Unselected;
+  color_6 = color_Unselected;
+    Provider.of<NewDataByShipper>(context, listen: false)
+        .updateTruckPreference(newValue: null);
+  }
   void invert_all_colour(int cardNumber) {
     if (cardNumber == 1 && color_1 == color_Unselected) {
       color_1 = color_Selected;
