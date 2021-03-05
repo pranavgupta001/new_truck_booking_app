@@ -2,7 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:truck_booking_app/screens/mapScreen.dart';
 import 'package:truck_booking_app/screens/ts_find_load.dart';
+import 'package:truck_booking_app/widgets/LoadingPointSeachScreen.dart';
 import 'file:///C:/Users/chira/flutter_app/test1_truck_booking_app/lib/widgets/providerData.dart';
 import 'screens/shipper_login_screen.dart';
 import 'screens/choice_screen.dart';
@@ -38,6 +40,8 @@ class FlashChat extends StatelessWidget {
                         user: FirebaseAuth.instance.currentUser,
                       ),
                   '/findLoad' : (context) => FindLoadScreen(),
+                  '/maps' : (context) => MapScreen(),
+                  '/product' : (context) => LoadingPointSearchScreen(),
                 },
               ),
             );

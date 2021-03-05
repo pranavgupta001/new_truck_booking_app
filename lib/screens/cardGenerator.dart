@@ -44,7 +44,7 @@ class _CardScreenState extends State<CardScreen> {
   var jsonData;
 
   Future<List<CardsModal>> getCardsData() async {
-    http.Response response = await http.get('http://10.0.2.2:50186/load');
+    http.Response response = await http.get('http://10.0.2.2:50224/load');
     jsonData = await jsonDecode(response.body);
     print(response.statusCode);
     print(jsonData);

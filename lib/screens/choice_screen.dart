@@ -21,7 +21,7 @@ class ChoiceScreen extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.only(left: 10, right: 10,),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Card(
@@ -56,7 +56,7 @@ class ChoiceScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 100,),
+                // SizedBox(height: 100,),
                 Container(
                   child: FlatButton(
                     child: Text('Cards', style: TextStyle(color: Colors.black87,fontSize: 30),),

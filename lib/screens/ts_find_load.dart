@@ -3,11 +3,13 @@ import 'package:truck_booking_app/widgets/backend_connection.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:truck_booking_app/widgets/cardProperties.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 var controller1 = TextEditingController();
 var controller2 = TextEditingController();
 var controller3 = TextEditingController();
 String loadingPoint;
 String unloadingPoint;
+String apikey = 'AIzaSyCI8bvNwE05B7Cp03Rvc-QsMX9QjY-EsS4';
 
 class FindLoadScreen extends StatefulWidget {
   @override
@@ -20,7 +22,7 @@ class _FindLoadScreenState extends State<FindLoadScreen> {
   var jsonData;
 
   Future<List<CardsModal>> getCardsData() async {
-    http.Response response = await http.get('http://localhost:50186/load');
+    http.Response response = await http.get('http://localhost:50224/load');
     jsonData = await jsonDecode(response.body);
     print(response.statusCode);
     print(jsonData);
@@ -146,47 +148,41 @@ class _FindLoadScreenState extends State<FindLoadScreen> {
                             ),
                           ),
                           SizedBox(height: 15,),
-                          Flexible(
-                            child: Container(
-                              height: 230,
-                              child: FutureBuilder(
-                                  future: getCardsData(),
-                                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                    if (snapshot.data == null) {
-                                      return Container(
-                                        child: Center(
-                                          child: Icon(
-                                            Icons.error,
-                                            color: Colors.red,
-                                            size: 50,
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                    return ListView.builder(
-                                      reverse: false,
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                      ),
-                                      itemCount: snapshot.data.length,
-                                      itemBuilder: (context, index) => DetailCard(
-                                        loadingPoint: snapshot.data[index].loadingPoint,
-                                        unloadingPoint: snapshot.data[index].unloadingPoint,
-                                        productType: snapshot.data[index].productType,
-                                        truckPreference: snapshot.data[index].truckType,
-                                        noOfTrucks: snapshot.data[index].noOfTrucks,
-                                        weight: snapshot.data[index].weight,
-                                        isPending: snapshot.data[index].status == 'pending'
-                                            ? true
-                                            : false,
-                                        comments: snapshot.data[index].comment,
-                                        isCommentsEmpty:
-                                        snapshot.data[index].comment == '' ? true : false,
-                                      ),
-                                    );
-                                  }),
-                            ),
-                          ),
+                          FutureBuilder(
+                              future: getCardsData(),
+                              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                if (snapshot.data == null) {
+                                  return Container(
+                                    child: Center(
+                                      child: SpinKitDoubleBounce(
+                                        color: Colors.red,
+                                        size: 40,
+                                      )
+                                    ),
+                                  );
+                                }
+                                return ListView.builder(
+                                  reverse: false,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                  ),
+                                  itemCount: snapshot.data.length,
+                                  itemBuilder: (context, index) => DetailCard(
+                                    loadingPoint: snapshot.data[index].loadingPoint,
+                                    unloadingPoint: snapshot.data[index].unloadingPoint,
+                                    productType: snapshot.data[index].productType,
+                                    truckPreference: snapshot.data[index].truckType,
+                                    noOfTrucks: snapshot.data[index].noOfTrucks,
+                                    weight: snapshot.data[index].weight,
+                                    isPending: snapshot.data[index].status == 'pending'
+                                        ? true
+                                        : false,
+                                    comments: snapshot.data[index].comment,
+                                    isCommentsEmpty:
+                                    snapshot.data[index].comment == '' ? true : false,
+                                  ),
+                                );
+                              }),
                         ],
                       ),
                     ),

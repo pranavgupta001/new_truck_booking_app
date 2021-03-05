@@ -4,7 +4,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:location_permissions/location_permissions.dart';
 import 'file:///C:/Users/chira/flutter_app/test1_truck_booking_app/lib/screens/shipper_new_entry.dart';
-
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'cardGenerator.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,7 +22,9 @@ class _HomeScreenState extends State<HomeScreen> {
   String city = '';
 
   void getCurrentLocation() async {
+
     if (widget.userCity == '' || widget.userCity == null){
+
     PermissionStatus permission =
         await LocationPermissions().requestPermissions();
     PermissionStatus permission1 =
@@ -32,11 +36,28 @@ class _HomeScreenState extends State<HomeScreen> {
     final coordinates = new Coordinates(position.latitude, position.longitude);
     var addresses =
         await Geocoder.local.findAddressesFromCoordinates(coordinates);
-    print('address');
-    print(addresses);
     var first = addresses.first;
-    print("${first.featureName} : ${first.addressLine}");
-    city = first.featureName;
+    print(first.addressLine);
+    http.Response tokenGet = await http.post('https://outpost.mapmyindia.com/api/security/oauth/token?grant_type=client_credentials&client_id=33OkryzDZsJmp0siGnK04TeuQrg3DWRxswnTg_VBiHew-2D1tA3oa3fthrGnx4vwbwlbF_xT2T4P9dykuS1GUNmbRb8e5CUgz-RgWDyQspeDCXkXK5Nagw==&client_secret=lrFxI-iSEg9xHXNZXiqUoprc9ZvWP_PDWBDw94qhrze0sUkn7LBDwRNFscpDTVFH7aQT4tu6ycN0492wqPs-ewpjObJ6xuR7iRufmSVcnt9fys5dp0F5jlHLxBEj7oqq');
+    print(tokenGet.statusCode);
+    print(tokenGet.body);
+    var body = jsonDecode(tokenGet.body);
+    var token = body["access_token"];
+    http.Response response = await http.get('https://atlas.mapmyindia.com/api/places/geocode?address=${first.addressLine}',
+      headers: {HttpHeaders.authorizationHeader: "$token"},);
+    print(response.statusCode);
+    print(response.body);
+    var adress = jsonDecode(response.body);
+    print(adress);
+    var cityName = adress["copResults"]["city"];
+    print(cityName);
+    city = cityName;
+    // http.Response response1 = await http.get('https://atlas.mapmyindia.com/api/places/search/json?query=alwar',
+    //   headers: {HttpHeaders.authorizationHeader: 'Bearer $token'},);
+    // print(response1.statusCode);
+    // print(response1.body);
+    // var adressa = jsonDecode(response1.body);
+    // print(adressa);
   }
   else { city = widget.userCity;}}
 

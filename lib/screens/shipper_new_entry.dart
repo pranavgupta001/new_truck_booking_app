@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:truck_booking_app/widgets/LoadingPointSeachScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,9 +17,11 @@ import '../widgets/truck_type_modal_screen.dart';
 
 String mapKey = "AIzaSyCTVVijIWofDrI6LpSzhUqJIF90X-iyZmE";
 
-var controller1 = TextEditingController();
+// var controller1 = TextEditingController();
 var controller2 = TextEditingController();
 var controller3 = TextEditingController();
+
+
 
 class ShipperNewEntryScreen extends StatefulWidget {
   String userCity = '';
@@ -31,24 +35,15 @@ class ShipperNewEntryScreen extends StatefulWidget {
 
 class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
   @override
-  String city = ' ';
-  void fillCityName(String cityName) async {
-    if (cityName.length > 1) {
-      String autoCompleteUrl =
-          'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$cityName&key=$mapKey&sessiontoken=1234567890';
-      var res = await http.get(autoCompleteUrl);
-      var jsonData = await jsonDecode(res.body);
-      print(res.statusCode);
-      print(jsonData);
-    }
-  }
+
 
   void initState() {
     super.initState();
-    controller1.clear();
+    // controller1.clear();
     controller2.clear();
     controller3.clear();
-    controller1 = TextEditingController(text: widget.userCity);
+    // if(widget.userCity != '' && widget.userCity != null){
+    // controller1 = TextEditingController(text: widget.userCity);}
   }
   Future<CardsModal> createCardOnApi() async {
     print(Provider.of<NewDataByShipper>(context, listen: false).loadingPoint);
@@ -69,7 +64,7 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
       "comment": Provider.of<NewDataByShipper>(context, listen: false).isCommentsEmpty ? '' : Provider.of<NewDataByShipper>(context, listen: false).comments
     };
     String body = json.encode(data);
-    final String apiUrl = "http://10.0.2.2:50186/load";
+    final String apiUrl = "http://10.0.2.2:50224/load";
     final response = await http.post(apiUrl,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
@@ -91,6 +86,8 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // if (Provider.of<NewDataByShipper>(context).loadingPoint != null){
+    //   controller1 = TextEditingController(text:(Provider.of<NewDataByShipper>(context).loadingPoint));}
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -131,12 +128,15 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                           Container(
                             height: 72,
                             child: TextFormField(
-                              controller: controller1,
-                              onFieldSubmitted: (String value){ Provider.of<NewDataByShipper>(context, listen: false).updateLoadingPoint(newValue:value.trim());} ,
-                              onChanged: (newValue) {
-                                Provider.of<NewDataByShipper>(context, listen: false).updateLoadingPoint(newValue: newValue.trim());
-                                fillCityName(newValue);
+                              initialValue:Provider.of<NewDataByShipper>(context).loadingPoint != null ?Provider.of<NewDataByShipper>(context).loadingPoint : (widget.userCity != '' ? widget.userCity : ''),
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=> LoadingPointSearchScreen() ));
                               },
+                              onFieldSubmitted: (String value){ Provider.of<NewDataByShipper>(context, listen: false).updateLoadingPoint(newValue:value.trim());} ,
+                              // onChanged: (newValue) {
+                              //   Provider.of<NewDataByShipper>(context, listen: false).updateLoadingPoint(newValue: newValue.trim());
+                              //   fillCityName(newValue);
+                              // },
                               onSaved: (value){Provider.of<NewDataByShipper>(context, listen: false).updateLoadingPoint(newValue: value.trim());},
                               decoration: InputDecoration(
                                 hintText: 'Loading Point',
