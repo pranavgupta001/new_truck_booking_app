@@ -1,9 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'home_Screen.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter/services.dart';
-
+import 'package:truck_booking_app/screens/ts_home_screen.dart';
 class TransporterLoginScreen extends StatefulWidget {
   @override
   _TransporterLoginScreenState createState() => _TransporterLoginScreenState();
@@ -36,7 +35,7 @@ class _TransporterLoginScreenState extends State<TransporterLoginScreen> {
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => HomeScreen(
+                builder: (context) => TsHomeScreen(
                   user: user,
                 ),), (route) => false);
         } else {
@@ -106,7 +105,7 @@ class _TransporterLoginScreenState extends State<TransporterLoginScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => HomeScreen(
+                              builder: (context) => TsHomeScreen(
                                 user: user,
                               )));
                     } else {
@@ -131,120 +130,123 @@ class _TransporterLoginScreenState extends State<TransporterLoginScreen> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.black54,
-          title: Text('Verify Yourself'),
-          leading: GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Icon(Icons.arrow_back_ios, size: 25),
+      home: GestureDetector(
+        onTap: (){FocusScope.of(context).unfocus();},
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.black54,
+            title: Text('Verify Yourself'),
+            leading: GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Icon(Icons.arrow_back_ios, size: 25),
+            ),
           ),
-        ),
-        backgroundColor:  Color(0xFFF3F2F1),
-        key: _scaffoldKey,
-        body: ModalProgressHUD(
-          inAsyncCall: showProgressHud,
-          child: Form(
-            key: formKey,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 15,  vertical: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        height: 30,
-                        width: 30,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/india_flag.png'),
-                            // colorFilter: ColorFilter.mode(
-                            //     Colors.white.withOpacity(0.8), BlendMode.dstATop),
+          backgroundColor:  Color(0xFFF3F2F1),
+          key: _scaffoldKey,
+          body: ModalProgressHUD(
+            inAsyncCall: showProgressHud,
+            child: Form(
+              key: formKey,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 15,  vertical: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 30,
+                          width: 30,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage('assets/india_flag.png'),
+                              // colorFilter: ColorFilter.mode(
+                              //     Colors.white.withOpacity(0.8), BlendMode.dstATop),
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(width: 3,),
-                      Container(
-                        child: Text('+91', style: TextStyle(
-                          fontSize: 20,
-                        ),),
-                      ),
-                      SizedBox(width: 4,),
-                      SizedBox(
-                        width: 200,
-                        child: TextFormField(
-                          validator: (String value) {
-                            if (value.isEmpty) {
-                              return 'Please Enter Mobile Number';
-                            } else if (value.length != 10) {
-                              return 'Please Enter A Valid Mobile Number';
-                            } else
-                              return null;
-                          },
-                          autofocus: true,
-                          keyboardType: TextInputType.phone,
-                          inputFormatters: <TextInputFormatter>[
-                            LengthLimitingTextInputFormatter(10),
-                            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                          ],
-                          onChanged: (value) {
-                            mobileNum = value;
-                            if (value.length != 10) {
-                              setState(() {
-                                _disableButton = true;
-                              });
-                            } else {
-                              setState(() {
-                                _disableButton = false;
-                              });
-                            }
-                          },
-                          style: TextStyle(
+                        SizedBox(width: 3,),
+                        Container(
+                          child: Text('+91', style: TextStyle(
                             fontSize: 20,
-                          ),
-                          decoration: InputDecoration(
-                              hintText: 'Enter Mobile Number',
-                              hintStyle: TextStyle(fontSize: 20)),
+                          ),),
                         ),
-                      ),
+                        SizedBox(width: 4,),
+                        SizedBox(
+                          width: 200,
+                          child: TextFormField(
+                            validator: (String value) {
+                              if (value.isEmpty) {
+                                return 'Please Enter Mobile Number';
+                              } else if (value.length != 10) {
+                                return 'Please Enter A Valid Mobile Number';
+                              } else
+                                return null;
+                            },
+                            autofocus: true,
+                            keyboardType: TextInputType.phone,
+                            inputFormatters: <TextInputFormatter>[
+                              LengthLimitingTextInputFormatter(10),
+                              FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                            ],
+                            onChanged: (value) {
+                              mobileNum = value;
+                              if (value.length != 10) {
+                                setState(() {
+                                  _disableButton = true;
+                                });
+                              } else {
+                                setState(() {
+                                  _disableButton = false;
+                                });
+                              }
+                            },
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                            decoration: InputDecoration(
+                                hintText: 'Enter Mobile Number',
+                                hintStyle: TextStyle(fontSize: 20)),
+                          ),
+                        ),
 
-                    ],
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  RaisedButton(
-                    color: Color(0xFF6264A7),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    RaisedButton(
+                      color: Color(0xFF6264A7),
 
-                    onPressed: _disableButton
-                        ? null
-                        : () {
-                      if (!formKey.currentState.validate()) {
-                        return;
-                      } else {
-                        setState(() {
-                          showProgressHud = true;
-                        });
-                        loginUser('+91$mobileNum', (context));
-                      }
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                      child: Text(
-                        'Verify',
-                        style: TextStyle(
-                            fontSize: 25,
-                            color: Colors.white
+                      onPressed: _disableButton
+                          ? null
+                          : () {
+                        if (!formKey.currentState.validate()) {
+                          return;
+                        } else {
+                          setState(() {
+                            showProgressHud = true;
+                          });
+                          loginUser('+91$mobileNum', (context));
+                        }
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        child: Text(
+                          'Verify',
+                          style: TextStyle(
+                              fontSize: 25,
+                              color: Colors.white
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

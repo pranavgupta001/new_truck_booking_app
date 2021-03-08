@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'file:///C:/Users/chira/flutter_app/test1_truck_booking_app/lib/widgets/providerData.dart';
+import 'package:truck_booking_app/widgets/providerData.dart';
 
 Color color_Unselected = Colors.white;
 Color color_Selected = Colors.black45;
@@ -16,11 +16,6 @@ Color color_9 = color_Unselected;
 Color color_10 = color_Unselected;
 
 class WeightWidgetScreen extends StatefulWidget {
-  @override
-  _WeightWidgetScreenState createState() => _WeightWidgetScreenState();
-}
-
-class _WeightWidgetScreenState extends State<WeightWidgetScreen> {
   void clear_all(){
     color_1 = color_Unselected;
     color_2 = color_Unselected;
@@ -32,9 +27,13 @@ class _WeightWidgetScreenState extends State<WeightWidgetScreen> {
     color_8 = color_Unselected;
     color_9 = color_Unselected;
     color_10 = color_Unselected;
-    Provider.of<NewDataByShipper>(context, listen: false)
-        .updateWeight(newValue: null);
   }
+  @override
+  _WeightWidgetScreenState createState() => _WeightWidgetScreenState();
+}
+
+class _WeightWidgetScreenState extends State<WeightWidgetScreen> {
+
   void invert_all_colour(int cardNumber) {
     if (cardNumber == 1 && color_1 == color_Unselected) {
       color_1 = color_Selected;

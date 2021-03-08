@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/chira/flutter_app/test1_truck_booking_app/lib/widgets/backend_connection.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:truck_booking_app/widgets/backend_connection.dart';
+import 'package:truck_booking_app/screens/shipper_new_entry.dart';
+import 'package:truck_booking_app/screens/shipper_home_Screen.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'file:///C:/Users/chira/flutter_app/test1_truck_booking_app/lib/screens/home_Screen.dart';
-import 'file:///C:/Users/chira/flutter_app/test1_truck_booking_app/lib/screens/shipper_new_entry.dart';
-import '../widgets/cardProperties.dart';
-
+import 'package:truck_booking_app/widgets/cardProperties.dart';
 String mapKey = "AIzaSyCTVVijIWofDrI6LpSzhUqJIF90X-iyZmE";
 
 class CardTile {
@@ -44,7 +44,7 @@ class _CardScreenState extends State<CardScreen> {
   var jsonData;
 
   Future<List<CardsModal>> getCardsData() async {
-    http.Response response = await http.get('http://10.0.2.2:50224/load');
+    http.Response response = await http.get("http://10.0.2.2:49538/load");
     jsonData = await jsonDecode(response.body);
     print(response.statusCode);
     print(jsonData);
@@ -68,154 +68,156 @@ class _CardScreenState extends State<CardScreen> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        backgroundColor: Color(0xFFF3F2F1),
-        appBar: AppBar(
-          backgroundColor: Colors.black87,
-          leading: GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Icon(Icons.arrow_back_ios, size: 25),
-          ),
-          title: Text(
-            'Available Requests',
-            textAlign: TextAlign.center,
-          ),
-        ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: FutureBuilder(
-                  future: getCardsData(),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (snapshot.data == null) {
-                      return Container(
-                        child: Center(
-                          child: Icon(
-                            Icons.error,
-                            color: Colors.red,
-                            size: 50,
-                          ),
-                        ),
-                      );
-                    }
-                    return ListView.builder(
-                      reverse: false,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 10,
-                      ),
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (context, index) => DetailCard(
-                        loadingPoint: snapshot.data[index].loadingPoint,
-                        unloadingPoint: snapshot.data[index].unloadingPoint,
-                        productType: snapshot.data[index].productType,
-                        truckPreference: snapshot.data[index].truckType,
-                        noOfTrucks: snapshot.data[index].noOfTrucks,
-                        weight: snapshot.data[index].weight,
-                        isPending: snapshot.data[index].status == 'pending'
-                            ? true
-                            : false,
-                        comments: snapshot.data[index].comment,
-                        isCommentsEmpty:
-                            snapshot.data[index].comment == '' ? true : false,
-                      ),
-                    );
-                  }),
+      home: GestureDetector(
+        onTap: (){FocusScope.of(context).unfocus();},
+        child: Scaffold(
+          backgroundColor: Color(0xFFF3F2F1),
+          appBar: AppBar(
+            backgroundColor: Colors.black87,
+            leading: GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Icon(Icons.arrow_back_ios, size: 25),
             ),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.grey, width: 1),
-                borderRadius: BorderRadius.circular(19),
-              ),
-              padding: EdgeInsets.only(bottom: 10, top: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(19),
-                    ),
-                    child: FlatButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HomeScreen(
-                                      userCity: widget.userCity,
-                                    ),),);
-                      },
-                      child: Hero(
-                        tag: 'home',
-                        child: Icon(
-                          Icons.home,
-                          color: Colors.black,
-                          size: 40,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(19),
-                    ),
-                    child: FlatButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ShipperNewEntryScreen(
-                              userCity: widget.userCity,
-                            ),
+            title: Text(
+              'Available Requests',
+              textAlign: TextAlign.center,
+            ),
+          ),
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: FutureBuilder(
+                    future: getCardsData(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (snapshot.data == null) {
+                        return Container(
+                          child: Center(
+                            child: SpinKitDoubleBounce(
+                              color: Colors.red,
+                              size: 40,
+                            )
                           ),
                         );
-                      },
-                      child: Hero(
-                        tag: 'add',
-                        child: Icon(
-                          Icons.add,
-                          color: Colors.black,
-                          size: 40,
+                      }
+                      return ListView.builder(
+                        reverse: false,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 10,
+                        ),
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (context, index) => DetailCard(
+                          loadingPoint: snapshot.data[index].loadingPoint,
+                          unloadingPoint: snapshot.data[index].unloadingPoint,
+                          productType: snapshot.data[index].productType,
+                          truckPreference: snapshot.data[index].truckType,
+                          noOfTrucks: snapshot.data[index].noOfTrucks,
+                          weight: snapshot.data[index].weight,
+                          isPending: snapshot.data[index].status == 'pending'
+                              ? true
+                              : false,
+                          comments: snapshot.data[index].comment,
+                          isCommentsEmpty:
+                              snapshot.data[index].comment == '' ? true : false,
+                        ),
+                      );
+                    }),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.grey, width: 1),
+                  borderRadius: BorderRadius.circular(19),
+                ),
+                padding: EdgeInsets.only(bottom: 10, top: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(19),
+                      ),
+                      child: FlatButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ShipperHomeScreen(
+                                        userCity: widget.userCity,
+                                      ),),);
+                        },
+                        child: Hero(
+                          tag: 'home',
+                          child: Icon(
+                            Icons.home,
+                            color: Colors.black,
+                            size: 40,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(19),
+                    SizedBox(
+                      width: 5,
                     ),
-                    child: FlatButton(
-                      onPressed: () {
-                        Navigator.push(
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(19),
+                      ),
+                      child: FlatButton(
+                        onPressed: () {
+                          Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => CardScreen(
-                                      userCity: widget.userCity,
-                                    )));
-                      },
-                      child: Hero(
-                        tag: 'list',
-                        child: Icon(
-                          Icons.list,
-                          size: 40,
-                          color: Colors.blue,
+                              builder: (context) => ShipperNewEntryScreen(
+                                userCity: widget.userCity,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Hero(
+                          tag: 'add',
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.black,
+                            size: 40,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(19),
+                      ),
+                      child: FlatButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CardScreen(
+                                        userCity: widget.userCity,
+                                      )));
+                        },
+                        child: Hero(
+                          tag: 'list',
+                          child: Icon(
+                            Icons.list,
+                            size: 40,
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

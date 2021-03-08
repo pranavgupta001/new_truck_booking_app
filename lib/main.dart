@@ -5,14 +5,14 @@ import 'package:provider/provider.dart';
 import 'package:truck_booking_app/screens/mapScreen.dart';
 import 'package:truck_booking_app/screens/ts_find_load.dart';
 import 'package:truck_booking_app/widgets/LoadingPointSeachScreen.dart';
-import 'file:///C:/Users/chira/flutter_app/test1_truck_booking_app/lib/widgets/providerData.dart';
-import 'screens/shipper_login_screen.dart';
-import 'screens/choice_screen.dart';
-import 'screens/transporter_login_screen.dart';
-import 'screens/shipper_new_entry.dart';
-import 'screens/cardGenerator.dart';
-import 'screens/home_Screen.dart';
-
+import 'widgets/providerData.dart';
+import 'package:truck_booking_app/screens/shipper_login_screen.dart';
+import 'package:truck_booking_app/screens/choice_screen.dart';
+import 'package:truck_booking_app/screens/transporter_login_screen.dart';
+import 'package:truck_booking_app/screens/shipper_new_entry.dart';
+import 'package:truck_booking_app/screens/cardGenerator.dart';
+import 'package:truck_booking_app/screens/shipper_home_Screen.dart';
+import 'package:truck_booking_app/screens/ts_home_screen.dart';
 void main() => runApp(FlashChat());
 
 class FlashChat extends StatelessWidget {
@@ -36,10 +36,11 @@ class FlashChat extends StatelessWidget {
                   '/login2': (context) => TransporterLoginScreen(),
                   '/newEntry': (context) => ShipperNewEntryScreen(),
                   '/cards': (context) => CardScreen(),
-                  '/home': (context) => HomeScreen(
+                  '/home': (context) => ShipperHomeScreen(
                         user: FirebaseAuth.instance.currentUser,
                       ),
-                  '/findLoad' : (context) => FindLoadScreen(),
+                  '/tsHome' : (context) => TsHomeScreen( user: FirebaseAuth.instance.currentUser,),
+                  '/findLoad' : (context) => TsFindLoadScreen(),
                   '/maps' : (context) => MapScreen(),
                   '/product' : (context) => LoadingPointSearchScreen(),
                 },

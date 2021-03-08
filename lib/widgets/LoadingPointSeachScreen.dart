@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
-import '../widgets/providerData.dart';
+import 'package:truck_booking_app/screens/shipper_new_entry.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -12,8 +11,9 @@ class LoactionCardsModal {
   LoactionCardsModal({this.placeName, this.placeAddress});
 }
 class LoadingPointSearchScreen extends StatefulWidget {
-  LoadingPointSearchScreen({this.value});
+  LoadingPointSearchScreen({this.value, this.city});
   String value;
+  String city;
   @override
   _LoadingPointSearchScreenState createState() => _LoadingPointSearchScreenState();
 }
@@ -43,95 +43,97 @@ class _LoadingPointSearchScreenState extends State<LoadingPointSearchScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<NewDataByShipper>(
-      create: (context) => NewDataByShipper(),
-      child: Scaffold(
-          backgroundColor: Color(0xFFF3F2F1),
-          appBar: AppBar(
-            backgroundColor: Colors.black,
-            leading: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Icon(Icons.arrow_back_ios, size: 25),
-            ),
-            title: Text(
-              'Shipping Details',
-              textAlign: TextAlign.center,
-            ),
+    return Scaffold(
+        backgroundColor: Color(0xFFF3F2F1),
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          leading: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Icon(Icons.arrow_back_ios, size: 25),
           ),
-          body: Column(
-            children: [
-              Container(
-                height: 72,
-                child: TextFormField(
-                  autofocus: true,
-                  //onFieldSubmitted: (String value){ Provider.of<NewDataByShipper>(context, listen: false).updateLoadingPoint(newValue:value.trim());} ,
-                  onChanged: (newValue) {
-                    print(newValue);
-                    setState(() {
-                      LoacationCards = fillCityName(newValue);
-                    });
-                    //Provider.of<NewDataByShipper>(context, listen: false).updateLoadingPoint(newValue: newValue.trim());
+          title: Text(
+            'Shipping Details',
+            textAlign: TextAlign.center,
+          ),
+        ),
+        body: Column(
+          children: [
+            Container(
+              height: 72,
+              child: TextFormField(
+                autofocus: true,
+                //onFieldSubmitted: (String value){ Provider.of<NewDataByShipper>(context, listen: false).updateLoadingPoint(newValue:value.trim());} ,
+                onChanged: (newValue) {
+                  print(newValue);
+                  setState(() {
+                    LoacationCards = fillCityName(newValue);
+                  });
+                  //Provider.of<NewDataByShipper>(context, listen: false).updateLoadingPoint(newValue: newValue.trim());
 
-                    print(newValue);
-                  },
-                  //onSaved: (value){Provider.of<NewDataByShipper>(context, listen: false).updateLoadingPoint(newValue: value.trim());},
-                  decoration: InputDecoration(
-                    hintText: 'Loading Point',
-                    hintStyle:
-                    TextStyle(fontSize: 20, color: Colors.grey),
-                  ),
-                  validator: (String value) {
-                    if (value.trim().isEmpty) {
-                      return 'Loading Point is Required';
-                    } else
-                      return null;
-                  },
-                  style:
-                  TextStyle(fontSize: 20, color: Colors.black),
+                  print(newValue);
+                },
+                //onSaved: (value){Provider.of<NewDataByShipper>(context, listen: false).updateLoadingPoint(newValue: value.trim());},
+                decoration: InputDecoration(
+                  hintText: widget.value,
+                  hintStyle:
+                  TextStyle(fontSize: 20, color: Colors.grey),
                 ),
+                validator: (String value) {
+                  if (value.trim().isEmpty) {
+                    return 'Loading Point is Required';
+                  } else
+                    return null;
+                },
+                style:
+                TextStyle(fontSize: 20, color: Colors.black),
               ),
-              SizedBox(
-                height: 10,
-              ),
-              Container(child: FutureBuilder(
-                future: LoacationCards,
-                  builder: (BuildContext context,  AsyncSnapshot snapshot ){
-                    if (snapshot.data == null) {
-                      return Container(
-                        child: Center(
-                          child: SpinKitDoubleBounce(
-                            color: Colors.blue,
-                            size: 40,
-                          ),),
-                      );
-                    }
-                    return Expanded(
-                      child: ListView.builder(
-                          reverse: false,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 10,
-                          ),
-                          itemCount: snapshot.data.length,
-                          itemBuilder: (context, index) => buildCard(
-                              placeName: snapshot.data[index].placeName,
-                              placeAddress: snapshot.data[index].placeAddress,
-                          context: context)
-                      ),
-                    );})),
-            ],
-          ),
-      ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Container(child: FutureBuilder(
+              future: LoacationCards,
+                builder: (BuildContext context,  AsyncSnapshot snapshot ){
+                  if (snapshot.data == null) {
+                    return Container(
+                      child: Center(
+                        child: SpinKitDoubleBounce(
+                          color: Colors.blue,
+                          size: 40,
+                        ),),
+                    );
+                  }
+                  return Expanded(
+                    child: ListView.builder(
+                        reverse: false,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 10,
+                        ),
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (context, index) => buildCard(
+                            placeName: snapshot.data[index].placeName,
+                            placeAddress: snapshot.data[index].placeAddress,
+                        context: context)
+                    ),
+                  );}),),
+          ],
+        ),
     );
   }
   GestureDetector buildCard({BuildContext context, String placeName, String placeAddress}) {
     return GestureDetector(
       onTap: (){
-       Provider.of<NewDataByShipper>(context,listen: false).updateLoadingPoint(newValue: placeName);
-      Navigator.pop(context);},
+        Navigator.push(context,
+          MaterialPageRoute(
+            builder: (context) => ShipperNewEntryScreen(
+              userCity: placeName,
+            ),),);
+      },
       child: Container(
-        child: Text('$placeName ($placeAddress)'),
+        padding: EdgeInsets.all(3),
+        child: Text('$placeName ($placeAddress)', style: TextStyle(fontSize: 13),),
       ),
     );
   }
