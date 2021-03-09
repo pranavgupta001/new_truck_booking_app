@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:truck_booking_app/widgets/backend_connection.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:truck_booking_app/screens/ts_found_loads.dart';
 var controller1 = TextEditingController();
 var controller2 = TextEditingController();
-var controller3 = TextEditingController();
-String loadingPoint;
-String unloadingPoint;
+String loadingPoint = '';
+String unloadingPoint = '';
 String apikey = 'AIzaSyCI8bvNwE05B7Cp03Rvc-QsMX9QjY-EsS4';
-
 class TsFindLoadScreen extends StatefulWidget {
   @override
   _TsFindLoadScreenState createState() => _TsFindLoadScreenState();
@@ -17,28 +13,6 @@ class TsFindLoadScreen extends StatefulWidget {
 final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
 class _TsFindLoadScreenState extends State<TsFindLoadScreen> {
-  var jsonData;
-
-  Future<List<CardsModal>> getCardsData() async {
-    http.Response response = await http.get('http://10.0.2.2:51636/load');
-    jsonData = await jsonDecode(response.body);
-    print(response.statusCode);
-    print(jsonData);
-    List<CardsModal> card = [];
-    for (var json in jsonData) {
-      CardsModal cardsModal = new CardsModal();
-      cardsModal.loadingPoint = json["loadingPoint"];
-      cardsModal.unloadingPoint = json["unloadingPoint"];
-      cardsModal.productType = json["productType"];
-      cardsModal.truckType = json["truckType"];
-      cardsModal.noOfTrucks = json["noOfTrucks"];
-      cardsModal.weight = json["weight"];
-      cardsModal.comment = json["comment"];
-      cardsModal.status = json["status"];
-      card.add(cardsModal);
-    }
-    return card;
-  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -82,27 +56,42 @@ class _TsFindLoadScreenState extends State<TsFindLoadScreen> {
                           children: [
                             Container(
                               height: 72,
-                              child: TextFormField(
-                                autofocus: true,
-                                // onFieldSubmitted: (String value) {
-                                //   loadingPoint = value;
-                                // },
-                                onChanged: (newValue) {
-                                  loadingPoint = newValue.trim();
-                                },
-                                decoration: InputDecoration(
-                                  hintText: 'Loading Point',
-                                  hintStyle:
-                                      TextStyle(fontSize: 20, color: Colors.grey),
-                                ),
-                                validator: (String value) {
-                                  if (value.trim().isEmpty) {
-                                    return 'Loading Point is Required';
-                                  } else
-                                    return null;
-                                },
-                                style:
-                                    TextStyle(fontSize: 20, color: Colors.black),
+                              width: double.infinity,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Expanded(
+                                    child: TextFormField(
+                                      autofocus: true,
+                                      controller: controller1,
+                                      // onFieldSubmitted: (String value) {
+                                      //   loadingPoint = value;
+                                      // },
+                                      onChanged: (newValue) {
+                                        loadingPoint = newValue.trim();
+                                      },
+                                      decoration: InputDecoration(
+                                        hintText: 'Loading Point',
+                                        hintStyle:
+                                            TextStyle(fontSize: 20, color: Colors.grey),
+                                      ),
+                                      // validator: (String value) {
+                                      //   if (value.trim().isEmpty) {
+                                      //     return 'Loading Point is Required';
+                                      //   } else
+                                      //     return null;
+                                      // },
+                                      style:
+                                          TextStyle(fontSize: 20, color: Colors.black),
+                                    ),
+                                  ),
+                                  Container(
+                                    child: GestureDetector(onTap:(){setState(() {
+                                      loadingPoint = '';
+                                      controller1 = TextEditingController(text:'');
+                                    });} ,child: Icon(Icons.clear,size: 25, color: Colors.black26,)),
+                                  )
+                                ],
                               ),
                             ),
                             SizedBox(
@@ -110,24 +99,39 @@ class _TsFindLoadScreenState extends State<TsFindLoadScreen> {
                             ),
                             Container(
                               height: 72,
-                              child: TextFormField(
-                                autofocus: true,
-                                onChanged: (newValue) {
-                                  unloadingPoint = newValue.trim();
-                                },
-                                decoration: InputDecoration(
-                                  hintText: 'Unloading Point',
-                                  hintStyle:
-                                      TextStyle(fontSize: 20, color: Colors.grey),
-                                ),
-                                validator: (String value) {
-                                  if (value.trim().isEmpty) {
-                                    return 'Unloading Point is Required';
-                                  } else
-                                    return null;
-                                },
-                                style:
-                                    TextStyle(fontSize: 20, color: Colors.black),
+                              width: double.infinity,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Expanded(
+                                    child: TextFormField(
+                                      controller: controller2,
+                                      autofocus: true,
+                                      onChanged: (newValue) {
+                                        unloadingPoint = newValue.trim();
+                                      },
+                                      decoration: InputDecoration(
+                                        hintText: 'Unloading Point',
+                                        hintStyle:
+                                            TextStyle(fontSize: 20, color: Colors.grey),
+                                      ),
+                                      // validator: (String value) {
+                                      //   if (value.trim().isEmpty) {
+                                      //     return 'Unloading Point is Required';
+                                      //   } else
+                                      //     return null;
+                                      // },
+                                      style:
+                                          TextStyle(fontSize: 20, color: Colors.black),
+                                    ),
+                                  ),
+                                  Container(
+                                    child: GestureDetector(onTap:(){setState(() {
+                                      unloadingPoint = '';
+                                      controller2 = TextEditingController(text: '');
+                                    });} ,child: Icon(Icons.clear,size: 25, color: Colors.black26,)),
+                                  ),
+                                ],
                               ),
                             ),
                             SizedBox(
@@ -137,12 +141,16 @@ class _TsFindLoadScreenState extends State<TsFindLoadScreen> {
                               height: 50,
                               child: FlatButton(
                                 onPressed: () async {
-                                  if (!formKey.currentState.validate()) {
-                                    return;
+                                  // if (!formKey.currentState.validate()) {
+                                  //   return;
+                                  // }
+                                  if ((loadingPoint == null || loadingPoint.trim() == '') && (unloadingPoint == null || unloadingPoint.trim() == '')){
+                                    FocusScope.of(context).unfocus();
+                                    showDialog(context: context, builder: (context)=> AlertDialogBox());
                                   }
-                                  print(loadingPoint);
-                                  print(unloadingPoint);
-                                },
+                                  else{
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> TsFoundLoadsScreen(searchedLoadingPoint: loadingPoint, searchedUnloadingPoint: unloadingPoint,)));
+                                }},
                                 color: Color(0xFF043979),
                                 child: Text(
                                   'Find',
@@ -156,50 +164,39 @@ class _TsFindLoadScreenState extends State<TsFindLoadScreen> {
                       ),
                     ),
                   ),
-                  // FutureBuilder(
-                  //     future: getCardsData(),
-                  //     builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  //       if (snapshot.data == null) {
-                  //         return Container(
-                  //           child: Center(
-                  //               child: SpinKitDoubleBounce(
-                  //                 color: Colors.red,
-                  //                 size: 40,
-                  //               )
-                  //           ),
-                  //         );
-                  //       }
-                  //       return Container(
-                  //         height: 200,
-                  //         child: ListView.builder(
-                  //           reverse: false,
-                  //           padding: EdgeInsets.symmetric(
-                  //             horizontal: 10,
-                  //           ),
-                  //           itemCount: snapshot.data.length,
-                  //           itemBuilder: (context, index) => DetailCard(
-                  //             loadingPoint: snapshot.data[index].loadingPoint,
-                  //             unloadingPoint: snapshot.data[index].unloadingPoint,
-                  //             productType: snapshot.data[index].productType,
-                  //             truckPreference: snapshot.data[index].truckType,
-                  //             noOfTrucks: snapshot.data[index].noOfTrucks,
-                  //             weight: snapshot.data[index].weight,
-                  //             isPending: snapshot.data[index].status.toString().toLowerCase() == 'pending'
-                  //                 ? true
-                  //                 : false,
-                  //             comments: snapshot.data[index].comment,
-                  //             isCommentsEmpty:
-                  //             snapshot.data[index].comment == '' ? true : false,
-                  //           ),
-                  //         ),
-                  //       );
-                  //     }),
                 ],
               ),
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class AlertDialogBox extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: Color(0xFFF3F2F1),
+      content: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text('Loading Point And Unloading Point', style: TextStyle(fontSize: 15, color: Colors.black54),),
+            Text('Both Cannot Be Empty', style: TextStyle(fontSize: 15, color: Colors.black54),),
+            Text('Please Enter Atleast One', style: TextStyle(fontSize: 15, color: Colors.black54),),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: (){Navigator.pop(context);},
+          child: Container(
+          padding: EdgeInsets.all(5),
+            color: Color(0xFF043979),
+            child: Center(child: Text('ReEnter', style: TextStyle(fontSize: 20, color: Colors.white),),),),),
+      ],
     );
   }
 }

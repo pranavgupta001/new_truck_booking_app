@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:truck_booking_app/widgets/providerData.dart';
 import 'shipper_home_Screen.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter/services.dart';
@@ -33,6 +35,8 @@ class _ShipperLoginScreenState extends State<ShipperLoginScreen> {
             showProgressHud = false;
           });
           Navigator.pop(context);
+          if(!Provider.of<NewDataByShipper>(context,listen: false).listOfShippers.contains(user.phoneNumber)){
+          Provider.of<NewDataByShipper>(context,listen: false).addShipper(newValue: user.phoneNumber);}
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
@@ -103,6 +107,8 @@ class _ShipperLoginScreenState extends State<ShipperLoginScreen> {
                         setState(() {
                           showProgressHud = false;
                         });
+                      if(!Provider.of<NewDataByShipper>(context,listen: false).listOfShippers.contains(user.phoneNumber)){
+                        Provider.of<NewDataByShipper>(context,listen: false).addShipper(newValue: user.phoneNumber);}
                         Navigator.push(
                             context,
                             MaterialPageRoute(

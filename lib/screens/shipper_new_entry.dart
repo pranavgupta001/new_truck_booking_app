@@ -81,7 +81,7 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
       "comment": Provider.of<NewDataByShipper>(context, listen: false).isCommentsEmpty ? '' : Provider.of<NewDataByShipper>(context, listen: false).comments
     };
     String body = json.encode(data);
-    final String apiUrl = "http://10.0.2.2:49538/load";
+    final String apiUrl = "http://10.0.2.2:52698/load";
     final response = await http.post(apiUrl,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
@@ -158,34 +158,48 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                           children: [
                             Container(
                               height: 72,
-                              child: TextFormField(
-                                keyboardType: TextInputType.streetAddress,
-                                controller: controller1,
-                                onChanged: (newValue) {
-                                  if(newValue.length > 2){print(newValue);
-                                  setState(() {
-                                    LocationCards1 = fillCityName(newValue);
-                                  });}
-                                  else{
-                                    setState(() {
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Expanded(
+                                    child: TextFormField(
+                                      keyboardType: TextInputType.streetAddress,
+                                      controller: controller1,
+                                      onChanged: (newValue) {
+                                        if(newValue.length > 2){print(newValue);
+                                        setState(() {
+                                          LocationCards1 = fillCityName(newValue);
+                                        });}
+                                        else{
+                                          setState(() {
+                                            LocationCards1 = null;
+                                          });
+                                        }
+                                      },
+                                      onFieldSubmitted: (String value){ Provider.of<NewDataByShipper>(context, listen: false).updateLoadingPoint(newValue:value.trim());} ,
+                                     decoration: InputDecoration(
+                                        hintText: 'Loading Point',
+                                        hintStyle:
+                                            TextStyle(fontSize: 20, color: Colors.grey),
+                                      ),
+                                      validator: (String value) {
+                                        if (value.trim().isEmpty) {
+                                          return 'Loading Point is Required';
+                                        } else
+                                          return null;
+                                      },
+                                      style:
+                                          TextStyle(fontSize: 20, color: Colors.black),
+                                    ),
+                                  ),
+                                  Container(
+                                    child: GestureDetector(onTap:(){setState(() {
+                                      Provider.of<NewDataByShipper>(context,listen: false).updateLoadingPoint(newValue: null);
                                       LocationCards1 = null;
-                                    });
-                                  }
-                                },
-                                onFieldSubmitted: (String value){ Provider.of<NewDataByShipper>(context, listen: false).updateLoadingPoint(newValue:value.trim());} ,
-                               decoration: InputDecoration(
-                                  hintText: 'Loading Point',
-                                  hintStyle:
-                                      TextStyle(fontSize: 20, color: Colors.grey),
-                                ),
-                                validator: (String value) {
-                                  if (value.trim().isEmpty) {
-                                    return 'Loading Point is Required';
-                                  } else
-                                    return null;
-                                },
-                                style:
-                                    TextStyle(fontSize: 20, color: Colors.black),
+                                      controller1 = TextEditingController(text: null);
+                                    });} ,child: Icon(Icons.clear,size: 25, color: Colors.black26,)),
+                                  )
+                                ],
                               ),
                             ),
                             LocationCards1 == null ? Container(): SizedBox(height: 20,),
@@ -220,34 +234,48 @@ class _ShipperNewEntryScreenState extends State<ShipperNewEntryScreen> {
                             ),
                             Container(
                               height: 72,
-                              child: TextFormField(
-                                keyboardType: TextInputType.streetAddress,
-                                controller: controller2,
-                                onChanged: (newValue) {
-                                  if(newValue.length > 2){print(newValue);
-                                  setState(() {
-                                    LocationCards2 = fillCityName(newValue);
-                                  });}
-                                  else{
-                                    setState(() {
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Expanded(
+                                    child: TextFormField(
+                                      keyboardType: TextInputType.streetAddress,
+                                      controller: controller2,
+                                      onChanged: (newValue) {
+                                        if(newValue.length > 2){print(newValue);
+                                        setState(() {
+                                          LocationCards2 = fillCityName(newValue);
+                                        });}
+                                        else{
+                                          setState(() {
+                                            LocationCards2 = null;
+                                          });
+                                        }
+                                      },
+                                      onFieldSubmitted: (String value){ Provider.of<NewDataByShipper>(context, listen: false).updateUnloadingPoint(newValue:value.trim());} ,
+                                      decoration: InputDecoration(
+                                        hintText: 'Unloading Point',
+                                        hintStyle:
+                                        TextStyle(fontSize: 20, color: Colors.grey),
+                                      ),
+                                      validator: (String value) {
+                                        if (value.trim().isEmpty) {
+                                          return 'Unloading Point is Required';
+                                        } else
+                                          return null;
+                                      },
+                                      style:
+                                      TextStyle(fontSize: 20, color: Colors.black),
+                                    ),
+                                  ),
+                                  Container(
+                                    child: GestureDetector(onTap:(){setState(() {
+                                      Provider.of<NewDataByShipper>(context,listen: false).updateUnloadingPoint(newValue: null);
                                       LocationCards2 = null;
-                                    });
-                                  }
-                                },
-                                onFieldSubmitted: (String value){ Provider.of<NewDataByShipper>(context, listen: false).updateUnloadingPoint(newValue:value.trim());} ,
-                                decoration: InputDecoration(
-                                  hintText: 'Unloading Point',
-                                  hintStyle:
-                                  TextStyle(fontSize: 20, color: Colors.grey),
-                                ),
-                                validator: (String value) {
-                                  if (value.trim().isEmpty) {
-                                    return 'Unloading Point is Required';
-                                  } else
-                                    return null;
-                                },
-                                style:
-                                TextStyle(fontSize: 20, color: Colors.black),
+                                      controller2= TextEditingController(text: null);
+                                    });} ,child: Icon(Icons.clear, size: 25, color: Colors.black26,)),
+                                  )
+                                ],
                               ),
                             ),
                             LocationCards2 == null ? Container(): SizedBox(height: 20,),

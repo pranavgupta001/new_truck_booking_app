@@ -10,7 +10,13 @@ class NewDataByShipper extends ChangeNotifier {
   bool isPending = true;
   String comments;
   bool isCommentsEmpty = true;
+  List listOfShippers = [];
 
+  void addShipper({String newValue}) {
+    listOfShippers.add(newValue);
+    print(newValue);
+    notifyListeners();
+  }
   void updateLoadingPoint({String newValue}) {
     loadingPoint = newValue;
     print(loadingPoint);

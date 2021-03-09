@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:truck_booking_app/screens/mapScreen.dart';
 import 'package:truck_booking_app/screens/ts_find_load.dart';
+import 'package:truck_booking_app/screens/ts_found_loads.dart';
 import 'package:truck_booking_app/widgets/LoadingPointSeachScreen.dart';
 import 'widgets/providerData.dart';
 import 'package:truck_booking_app/screens/shipper_login_screen.dart';
@@ -29,7 +30,7 @@ class FlashChat extends StatelessWidget {
               create: (context) => NewDataByShipper(),
               child: MaterialApp(
                 initialRoute:
-                    FirebaseAuth.instance.currentUser == null ? '/' : '/home',
+                    FirebaseAuth.instance.currentUser == null ? '/' : (Provider.of<NewDataByShipper>(context,listen: false).listOfShippers.contains(FirebaseAuth.instance.currentUser.phoneNumber)? '/home' : '/tsHome'),
                 routes: {
                   '/': (context) => ChoiceScreen(),
                   '/login1': (context) => ShipperLoginScreen(),
@@ -43,6 +44,7 @@ class FlashChat extends StatelessWidget {
                   '/findLoad' : (context) => TsFindLoadScreen(),
                   '/maps' : (context) => MapScreen(),
                   '/product' : (context) => LoadingPointSearchScreen(),
+                  'found_loads' : (context) => TsFoundLoadsScreen(),
                 },
               ),
             );

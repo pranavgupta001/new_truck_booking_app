@@ -134,18 +134,20 @@ class _TsHomeScreenState extends State<TsHomeScreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  '           Welcome To \n The Truck Booking App',
-                  style: TextStyle(
-                      fontSize: 30,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                SizedBox(
-                  height: 200,
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      '           Welcome To \n The Truck Booking App',
+                      style: TextStyle(
+                          fontSize: 30,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500),
+                    ),
+                    SizedBox(
+                      height: 200,
+                    )
+                  ],
                 ),
                 Container(
                   decoration: BoxDecoration(

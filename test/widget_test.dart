@@ -7,7 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'file:///C:/Users/chira/flutter_app/test1_truck_booking_app/lib/screens/choice_screen.dart';
+import 'package:truck_booking_app/screens/choice_screen.dart';
 
 
 void main() {
