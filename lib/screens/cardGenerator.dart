@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:truck_booking_app/widgets/backend_connection.dart';
-import 'package:truck_booking_app/screens/shipper_new_entry.dart';
-import 'package:truck_booking_app/screens/shipper_home_Screen.dart';
+import 'package:Liveasy/widgets/backend_connection.dart';
+import 'package:Liveasy/screens/shipper_new_entry.dart';
+import 'package:Liveasy/screens/shipper_home_Screen.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:truck_booking_app/widgets/cardProperties.dart';
+import 'package:Liveasy/widgets/cardProperties.dart';
 String mapKey = "AIzaSyCTVVijIWofDrI6LpSzhUqJIF90X-iyZmE";
 
 class CardTile {
@@ -44,7 +44,7 @@ class _CardScreenState extends State<CardScreen> {
   var jsonData;
 
   Future<List<CardsModal>> getCardsData() async {
-    http.Response response = await http.get("http://10.0.2.2:52698/load");
+    http.Response response = await http.get("http://10.0.2.2:55766/load");
     jsonData = await jsonDecode(response.body);
     print(response.statusCode);
     print(jsonData);

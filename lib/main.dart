@@ -2,35 +2,35 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:truck_booking_app/screens/mapScreen.dart';
-import 'package:truck_booking_app/screens/ts_find_load.dart';
-import 'package:truck_booking_app/screens/ts_found_loads.dart';
-import 'package:truck_booking_app/widgets/LoadingPointSeachScreen.dart';
+import 'package:Liveasy/screens/mapScreen.dart';
+import 'package:Liveasy/screens/transporter_find_load.dart';
+import 'package:Liveasy/screens/transporter_found_loads.dart';
+import 'package:Liveasy/widgets/LoadingPointSeachScreen.dart';
 import 'widgets/providerData.dart';
-import 'package:truck_booking_app/screens/shipper_login_screen.dart';
-import 'package:truck_booking_app/screens/choice_screen.dart';
-import 'package:truck_booking_app/screens/transporter_login_screen.dart';
-import 'package:truck_booking_app/screens/shipper_new_entry.dart';
-import 'package:truck_booking_app/screens/cardGenerator.dart';
-import 'package:truck_booking_app/screens/shipper_home_Screen.dart';
-import 'package:truck_booking_app/screens/ts_home_screen.dart';
+import 'package:Liveasy/screens/shipper_login_screen.dart';
+import 'package:Liveasy/screens/choice_screen.dart';
+import 'package:Liveasy/screens/transporter_login_screen.dart';
+import 'package:Liveasy/screens/shipper_new_entry.dart';
+import 'package:Liveasy/screens/cardGenerator.dart';
+import 'package:Liveasy/screens/shipper_home_Screen.dart';
+import 'package:Liveasy/screens/transporter_home_screen.dart';
 void main() => runApp(FlashChat());
 
 class FlashChat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: Firebase.initializeApp(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return loading();
-          }
-          if (snapshot.connectionState == ConnectionState.done) {
-            return ChangeNotifierProvider<NewDataByShipper>(
-              create: (context) => NewDataByShipper(),
-              child: MaterialApp(
+    return ChangeNotifierProvider<NewDataByShipper>(
+      create: (context) => NewDataByShipper(),
+      child: FutureBuilder(
+          future: Firebase.initializeApp(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return loading();
+            }
+            if (snapshot.connectionState == ConnectionState.done) {
+              return MaterialApp(
                 initialRoute:
-                    FirebaseAuth.instance.currentUser == null ? '/' : (Provider.of<NewDataByShipper>(context,listen: false).listOfShippers.contains(FirebaseAuth.instance.currentUser.phoneNumber)? '/home' : '/tsHome'),
+                    FirebaseAuth.instance.currentUser == null ? '/' : '/home',
                 routes: {
                   '/': (context) => ChoiceScreen(),
                   '/login1': (context) => ShipperLoginScreen(),
@@ -46,11 +46,11 @@ class FlashChat extends StatelessWidget {
                   '/product' : (context) => LoadingPointSearchScreen(),
                   'found_loads' : (context) => TsFoundLoadsScreen(),
                 },
-              ),
-            );
-          }
-          return loading();
-        });
+              );
+            }
+            return loading();
+          }),
+    );
   }
 }
 
@@ -59,7 +59,7 @@ class loading extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: Colors.lightBlueAccent,
+        backgroundColor: Color(0xFFF3F2F1),
         body: Center(
           child: Container(
             child: Column(

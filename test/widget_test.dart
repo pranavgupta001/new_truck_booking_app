@@ -7,7 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:truck_booking_app/screens/choice_screen.dart';
+import 'package:Liveasy/screens/choice_screen.dart';
 
 
 void main() {

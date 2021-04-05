@@ -59,12 +59,6 @@ class ChoiceScreen extends StatelessWidget {
                     ),
                   ),
                   // SizedBox(height: 100,),
-                  Container(
-                    child: FlatButton(
-                      child: Text('Cards', style: TextStyle(color: Colors.black87,fontSize: 30),),
-                      onPressed: (){Navigator.pushNamed(context, '/tsHome');},
-                    ),
-                  ),
                   Card(
                     color: Colors.white,
                     elevation: 2,

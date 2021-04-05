@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:truck_booking_app/widgets/providerData.dart';
+import 'package:Liveasy/widgets/providerData.dart';
 
 Color color_Unselected = Colors.white;
 Color color_Selected = Colors.black45;

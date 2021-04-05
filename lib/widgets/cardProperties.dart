@@ -120,8 +120,8 @@ class DetailCard extends StatelessWidget {
                     ],
                   ),
                   Container(
-                    height: 90,
-                    width: 90,
+                    height: 85,
+                    width: 85,
                     alignment: Alignment.centerRight,
                     decoration: BoxDecoration(
                         image: DecorationImage(image: AssetImage('assets/${truckPreference.toLowerCase()}.jpeg'), fit: BoxFit.cover)

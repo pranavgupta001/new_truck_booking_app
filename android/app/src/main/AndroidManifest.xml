@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.chirag4601.truck_booking_app">
+    package="com.chirag4601.truck_booking_app"
+    android:installLocation="auto"
+    android:versionCode="101"
+    android:versionName="1.0.1">
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.

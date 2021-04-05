@@ -95,7 +95,7 @@ class _MapScreenState extends State<MapScreen> {
     showMarkerAtPosition(Position(latitude: lat, longitude: long), valueType);
   }
 
-  void getCurrentLocation() async {
+  void getCurrentLocationAndAnimate() async {
       Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
       LatLng coordinates = LatLng(position.latitude, position.longitude);
       print(coordinates);
@@ -153,7 +153,7 @@ class _MapScreenState extends State<MapScreen> {
                     onMapCreated: (GoogleMapController controller){
                       _controllerGoogleMap.complete(controller);
                       googleMapController = controller;
-                      getCurrentLocation();
+                      getCurrentLocationAndAnimate();
                     },
                   ),
                 ),

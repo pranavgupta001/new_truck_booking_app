@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter/services.dart';
-import 'package:truck_booking_app/screens/ts_home_screen.dart';
+import 'package:Liveasy/screens/transporter_home_screen.dart';
 class TransporterLoginScreen extends StatefulWidget {
   @override
   _TransporterLoginScreenState createState() => _TransporterLoginScreenState();

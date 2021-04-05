@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:truck_booking_app/screens/shipper_new_entry.dart';
+import 'package:Liveasy/screens/shipper_new_entry.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'dart:convert';

@@ -1,19 +1,19 @@
 import 'dart:io';
-import 'package:truck_booking_app/widgets/LoadingPointSeachScreen.dart';
+import 'package:Liveasy/widgets/LoadingPointSeachScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:truck_booking_app/screens/cardGenerator.dart';
+import 'package:Liveasy/screens/cardGenerator.dart';
 import 'package:provider/provider.dart';
-import 'package:truck_booking_app/widgets/weight_modal_screen.dart';
-import 'package:truck_booking_app/widgets/noOfTrucks_modal_screen.dart';
-import 'package:truck_booking_app/widgets/backend_connection.dart';
-import 'package:truck_booking_app/widgets/providerData.dart';
-import 'package:truck_booking_app/widgets/dropDownGenerator.dart';
-import 'package:truck_booking_app/widgets/product_type_modal_screen.dart';
-import 'package:truck_booking_app/widgets/truck_type_modal_screen.dart';
+import 'package:Liveasy/widgets/weight_modal_screen.dart';
+import 'package:Liveasy/widgets/noOfTrucks_modal_screen.dart';
+import 'package:Liveasy/widgets/backend_connection.dart';
+import 'package:Liveasy/widgets/providerData.dart';
+import 'package:Liveasy/widgets/dropDownGenerator.dart';
+import 'package:Liveasy/widgets/product_type_modal_screen.dart';
+import 'package:Liveasy/widgets/truck_type_modal_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 String mapKey = "AIzaSyCTVVijIWofDrI6LpSzhUqJIF90X-iyZmE";
 

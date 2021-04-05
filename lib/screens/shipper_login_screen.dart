@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:truck_booking_app/widgets/providerData.dart';
+import 'package:Liveasy/widgets/providerData.dart';
 import 'shipper_home_Screen.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter/services.dart';
