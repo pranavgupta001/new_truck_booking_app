@@ -1,5 +1,5 @@
-# truck_booking_app
 
+# liveasy_app
 A new Flutter application.
 
 ## Getting Started
